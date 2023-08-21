@@ -11,3 +11,6 @@ Encoding: UTF-8
 LazyData: true
 URL: https://github.com/gcperk/skmoose
 BugReports: https://github.com/gcperk/skmoose/issues
+Imports: 
+    dplyr,
+    sf

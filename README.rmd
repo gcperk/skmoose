@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/gcperk/libminer/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/gcperk/libminer/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/gcperk/skmoose/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/gcperk/skmoose/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of libminer is to provide summary of a users library. It is a toy package for testing and learning package development.
