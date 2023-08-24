@@ -13,4 +13,6 @@ URL: https://github.com/gcperk/skmoose
 BugReports: https://github.com/gcperk/skmoose/issues
 Imports: 
     dplyr,
+    magrittr,
     sf
+RoxygenNote: 7.2.3
