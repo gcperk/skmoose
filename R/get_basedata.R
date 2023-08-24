@@ -7,19 +7,19 @@
 #' @export
 #'
 #' @examples
-#' get_basedata(aoi, out_path = (file.path("data")))
+#' get_basedata(aoi, out_path))
 
 
 get_basedata <- function(in_aoi, out_path){
 
 
-  get_VRI(in_aoi, out_path)
-  get_water(in_aoi, out_path)
-  get_harvest(in_aoi, out_path)
-  get_water(in_aoi, out_path)
-  get_streams(in_aoi, out_path)
-  get_fires(in_aoi, out_path)
-  get_dem(in_aoi, out_path)
+  skmoose::get_VRI(in_aoi, out_path)
+  skmoose::get_water(in_aoi, out_path)
+  skmoose::get_harvest(in_aoi, out_path)
+  skmoose::get_water(in_aoi, out_path)
+  skmoose::get_streams(in_aoi, out_path)
+  skmoose::get_fires(in_aoi, out_path)
+  skmoose::get_dem(in_aoi, out_path)
 
 
 
