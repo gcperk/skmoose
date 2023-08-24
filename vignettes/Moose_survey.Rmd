@@ -17,3 +17,46 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(skmoose)
 ```
+
+# Introduction
+
+This package assists in determining moose quality and extent of usable habitat for a given study area. 
+
+Read in the survey blocks file. We will use a test subset provided with the package as an example. Note this file is preffered to be in .gpkg format, however see below for an example of converting a .shp to .gpkg file. 
+
+```{r}
+# read in the data 
+
+data(skmoose)
+
+
+# bks <- 
+#   
+#   
+# system.file("extdata", "survey_blocks.gpkg", package = "skmoose", mustWork = TRUE)
+#   
+#   
+  skmoose_example <- function(path = NULL) {
+  if (is.null(path)) {
+    dir(system.file("extdata", package = "skmoose"))
+  } else {
+    system.file("extdata", path, package = "skmoose", mustWork = TRUE)
+  }
+}
+#   
+#   skmoose_example()
+#   
+data_location <- fs::path_package("extdata", package = "skmoose")
+data_file <- skmoose_example()
+
+bks_name <- file.path(data_location, data_file)
+bks <- sf::st_read(bks_name)
+  
+
+
+
+
+
+
+```
+

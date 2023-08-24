@@ -55,10 +55,10 @@ get_basedata <- function(in_aoi, out_path){
 
       # Uses date filter which filters lakes
       lakes <- bcdata::bcdc_query_geodata("cb1e3aba-d3fe-4de1-a2d4-b8b6650fb1f6") %>%
-        bcdata::filter(INTERSECTS(in_aoi)) %>%
+        bcdata::filter(bcdata::INTERSECTS(in_aoi)) %>%
         bcdata::collect() %>%
         dplyr::select("id", "WATERBODY_TYPE", "AREA_HA") %>%
-        dplyr::filter(AREA_HA > 1000)
+        dplyr::filter("AREA_HA" > 1000)
 
       st_write(lakes, file.path(out_path, "lakes.gpkg"), append = FALSE)
 
@@ -66,7 +66,7 @@ get_basedata <- function(in_aoi, out_path){
   # download wetlands
 
       wetlands <- bcdata::bcdc_query_geodata("93b413d8-1840-4770-9629-641d74bd1cc6") %>%
-        bcdata::filter(INTERSECTS(in_aoi)) %>%
+        bcdata::filter(bcdata::INTERSECTS(in_aoi)) %>%
         bcdata::collect() %>%
         dplyr::select("id", "WATERBODY_TYPE", "AREA_HA")
 
@@ -85,7 +85,7 @@ get_basedata <- function(in_aoi, out_path){
     message("\rDownloading streams")
 
   streams <- bcdata::bcdc_query_geodata("92344413-8035-4c08-b996-65a9b3f62fca") %>%
-    bcdata::filter(INTERSECTS(in_aoi)) %>%
+    bcdata::filter(bcdata::INTERSECTS(in_aoi)) %>%
     bcdata::collect() %>%
     dplyr::select(c("id", "STREAM_ORDER"))%>%
     sf::st_zm()
@@ -110,7 +110,7 @@ get_basedata <- function(in_aoi, out_path){
 
       for (i in 1:length(fire_records)) {
         fires <- bcdata::bcdc_query_geodata(fire_records[i]) %>%
-          bcdata::filter(INTERSECTS(in_aoi)) %>%
+          bcdata::filter(bcdata::INTERSECTS(in_aoi)) %>%
           collect() %>%
           {if(nrow(.) > 0) sf::st_intersection(., in_aoi) else .}
 
@@ -143,7 +143,7 @@ get_basedata <- function(in_aoi, out_path){
       message("\rDownloading cutblock layers")
 
       cutblocks <- bcdata::bcdc_query_geodata("b1b647a6-f271-42e0-9cd0-89ec24bce9f7") %>%
-        bcdata::filter(INTERSECTS(in_aoi)) %>%
+        bcdata::filter(bcdata::INTERSECTS(in_aoi)) %>%
         bcdata::select(c("HARVEST_YEAR")) %>%
         bcdata::collect()
 
