@@ -15,7 +15,10 @@ LazyData: true
 URL: https://github.com/gcperk/skmoose
 BugReports: https://github.com/gcperk/skmoose/issues
 Imports: 
+    bcdata,
+    bcmaps,
     dplyr,
     magrittr,
-    sf
+    sf,
+    terra
 RoxygenNote: 7.2.3

@@ -7,7 +7,7 @@
 #' @export
 #'
 #' @examples
-#' get_basedata(aoi, out_path)
+#' #get_basedata(aoi, out_path)
 
 
 get_basedata <- function(in_aoi, out_path){
@@ -33,7 +33,7 @@ get_basedata <- function(in_aoi, out_path){
       bcdata::select(c("SPECIES_CD_1", "SPECIES_CD_2","SPECIES_CD_3","SPECIES_CD_4","SPECIES_CD_5","SPECIES_CD_6",
                        "BCLCS_LEVEL_3")) %>% # Treed sites
       bcdata::collect() %>%
-      {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
+      {if(nrow(.) > 0) sf::st_intersection(., in_aoi) else .}
 
 
       sf::st_write(vri, file.path(out_path, "vri.gpkg"), append = FALSE)
@@ -111,7 +111,7 @@ get_basedata <- function(in_aoi, out_path){
         fires <- bcdata::bcdc_query_geodata(fire_records[i]) %>%
           bcdata::filter(INTERSECTS(in_aoi)) %>%
           collect() %>%
-          {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
+          {if(nrow(.) > 0) sf::st_intersection(., in_aoi) else .}
 
         if(nrow(fires) > 0) {
           ## bind results of loops

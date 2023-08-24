@@ -4,9 +4,9 @@
 \name{skmoose-package}
 \alias{skmoose}
 \alias{skmoose-package}
-\title{skmoose: What the Package Does (Title Case)}
+\title{skmoose: Stratifies Moose Survey Blocks}
 \description{
-More about what it does (maybe more than one line) Use four spaces when indenting paragraphs within the Description.
+Extract all required base data to assess moose inaccessible areas and mooose browse areas for a given area of interest. This package then outputs a table to assess high, medium and low predicted moose habitat.
 }
 \seealso{
 Useful links:
