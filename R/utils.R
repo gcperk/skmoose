@@ -2,7 +2,7 @@
 #'
 #' @param path default location as NULL
 #'
-#' @return
+#' @return TRUE
 #' @noRd
 skmoose_example <- function(path = NULL) {
   if (is.null(path)) {
