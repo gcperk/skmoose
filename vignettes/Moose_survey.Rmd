@@ -17,6 +17,9 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(skmoose)
 library(sf)
+library(dplyr)
+library(terra)
+
 ```
 
 # Introduction
@@ -28,21 +31,208 @@ Read in the survey blocks file. We will use a test subset provided with the pack
 ```{r}
 # read in the data 
 
-
-# bks <- 
-#   
-#   
-# system.file("extdata", "survey_blocks.gpkg", package = "skmoose", mustWork = TRUE)
-#   
-#   
-#   
-#   skmoose_example()
-#   
 data_location <- fs::path_package("extdata", package = "skmoose")
 data_file <- skmoose::skmoose_example()
-
 bks_name <- file.path(data_location, data_file)
-bks <- sf::st_read(bks_name)
+
+
+# read in and format the data 
+aoi <- sf::st_read(file.path(bks_name))
+aoi <- aoi %>%
+  dplyr::mutate(bkname = seq(1,length(aoi$Name), 1)) %>%
+  dplyr::select(bkname)%>%
+  st_zm()
+
+
+# simplify the blocks into a single polygon to extract for the entire area. 
+aoi_simple <- st_union(aoi)
+
+
+```
+
+Create an ouput folder where you want the raw data geospatial data to be saved. 
+
+```{r}
+
+out_dir <- "C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_block_surveyR\\02.Data\\data"
+
+
+if (!dir.exists(out_dir )){
+  dir.create(out_dir )
+}else{
+  print("dir exists")
+}
+
+
+```
+```{r}
+# extract all base data
+
+get_basedata(in_aoi = aoi_simple, out_path = out_dir)
+
+
+
+```
+
+Once all the base data is extracted we can filter uninhabitable areas for moose. 
+This includes : 
+- Rock and Ice 
+- Waterbodies >1 km2
+- Elevations >1500 m 
+- Slopes >55 degrees
+
+
+```{r}
+
+rockice <- st_read(file.path(out_dir, "vri.gpkg")) %>%
+  dplyr::filter(BCLCS_LEVEL_3 == "A") %>%
+  dplyr::select(id) %>%
+  st_union()%>%
+  st_cast("MULTIPOLYGON")
+
+# filter lakes with >1 km2
+largelakes <- st_read(file.path(out_dir, "lakes.gpkg")) %>%
+  dplyr::filter(AREA_HA > 1000) %>%
+  #dplyr::select(id) %>%
+  st_union()
+
+st_write(largelakes , file.path(out_dir, "high_elevation.gpkg"))
+
+
+# filter elevations above threshold value
+eval_threshold = 1500
+
+trim <- terra::rast(file.path(out_dir, "dem.tif"))
+high_elev <- terra::clamp(trim, lower=eval_threshold, upper=Inf, values=FALSE)
+high_elev_poly <- as.polygons(high_elev)
+
+
+high_elev_sf <- st_as_sf(high_elev_poly) %>%
+  st_transform(3005) %>%
+  st_union(by_feature = FALSE) %>%
+  st_cast("MULTIPOLYGON") %>%
+  st_union
+
+st_write(high_elev_sf , file.path(out_dir, "high_elevation.gpkg"))
+
+# filter high slope 
+slope_thresh = 55
+
+  rslope <- terra::terrain(trim, v = "slope", neighbors = 8, unit = "degrees")
+
+  # filter by steep slope
+  steep <- clamp(rslope, lower=slope_thresh, upper=Inf, values=FALSE)
+  steep_poly <- as.polygons(steep)
+
+  # conver to sf and output
+  steep_sf <- st_as_sf(steep_poly)%>%
+    st_transform(3005) %>% 
+    st_union %>% 
+    st_cast("MULTIPOLYGON")
+
+  st_write(steep_sf, file.path(out_dir, "steep.gpkg"))
+
+
+
+
+unhab <- st_intersection(rockice, high_elev_sf, steep_sf, largelakes)
+
+unhab <- unhab %>%
+  st_union
+
+
+```
+
+
+
+We now compiled all the moose habitat areas 
+This includes : 
+- Deciduous tree species, queried in VRI: [SPECIES_CD LIKE 'A%' OR SPECIES_CD = 'EP' OR SPECIES_CD = 'SB' OR SPECIES__1 LIKE 'A%' OR SPECIES__1 = 'EP' OR SPECIES__1 = 'SB' OR SPECIES__3 LIKE 'A%' OR SPECIES__3 = 'EP' OR SPECIES__3 ='SB' OR SPECIES__5 LIKE 'A%' OR SPECIES__5 LIKE 'E%']
+
+- Early seral/shrub dynamic habitats: Fires that are >5 and <40 years old 
+** this one I might have to think about a bit more as basically the entire study area has burnt in 2014, 2018, 2021 or 2023. In 2018 we created a 4th stratum called Burnt so may look at potentially completed this again.
+
+o	Cutblocks that are >5 and < 40 years old 
+o	Buffered 3-8 order streams from FWA stream dataset by 150m (dissolved) 
+o	9th order streams buffered by 500 meters. 
+o	Wetlands from FWA ≤ 1 km2
+o	Skeena Wildlife Ecological Resource Model- Winter forage output 
+
+
+
+```{r}
+
+# get deciduos leading species
+
+vri <- st_read(file.path(out_dir, "vri.gpkg"))
+
+  vri1 <- vri %>% dplyr::filter(SPECIES_CD_1 %in% c("AT", "AC","EP","SB")) %>%
+    dplyr::select(SPECIES_CD_1)
+
+  vri2 <- vri %>% dplyr::filter(SPECIES_CD_2 %in% c("AT", "AC","EP","SB")) %>%
+    dplyr::select(SPECIES_CD_2)
+
+  vri3 <- vri %>% dplyr::filter(SPECIES_CD_3 %in% c("AT", "AC","EP","SB")) %>%
+    dplyr::select(SPECIES_CD_3)
+
+  vri4 <- vri %>% dplyr::filter(SPECIES_CD_4 %in% c("AT", "AC","EP","SB")) %>%
+    dplyr::select(SPECIES_CD_4)
+
+  vri5 <- vri %>% dplyr::filter(SPECIES_CD_5 %in% c("AT", "AC","EP","SB")) %>%
+    dplyr::select(SPECIES_CD_5)
+
+  vri6 <- vri %>% dplyr::filter(SPECIES_CD_6 %in% c("AT", "AC","EP","SB")) %>%
+    dplyr::select(SPECIES_CD_6)
+
+
+  vri_moose <- st_join(vri1, vri2)
+  vri_moose <- st_join(vri_moose, vri3)
+  vri_moose <- st_join(vri_moose, vri4)
+  vri_moose <- st_join(vri_moose, vri5)
+  vri_moose <- st_join(vri_moose, vri6)
+
+  unique(vri$SPECIES_CD_1)
+
+  vri_moose <- st_union(vri_moose)
+
+  st_write(vri_moose, file.path(out_dir, "vri_decid.gpkg") , append = FALSE)
+
+  
+
+  # harvest 
+  cutblock_min_yr = 5
+  cutblock_max_yr = 40 
+  
+  
+  cutblocks <- st_read(file.path(out_dir, "cutblocks.gpkg"))
+ 
+  cutblocks_yrs <- cutblocks %>%
+    dplyr::mutate(yrs_since_burn = (as.numeric(format(Sys.time(), "%Y")) - HARVEST_YEAR))%>%
+    st_cast("MULTIPOLYGON")
+  
+  cutblocks_yrs <- cutblocks_yrs %>%
+    filter(yrs_since_burn >=  cutblock_min_yr | yrs_since_burn <= cutblock_max_yr)
+
+  st_write(cutblocks_yrs, file.path(out_dir, "cutblocks_filtered.gpkg"), append = FALSE)
+
+
+  
+   # fire years 
+  fire_min_yr = 5
+  fire_max_yr = 40 
+  
+  fires <- st_read(file.path(out_dir, "fire.gpkg"))
+
+  # filter for recent fires
+    fires <- fires %>%
+        dplyr::select(id, FIRE_YEAR)%>%
+     dplyr::filter(as.numeric(format(Sys.time(), "%Y")) - FIRE_YEAR <= fire_max_yr) %>%
+        dplyr::filter(as.numeric(format(Sys.time(), "%Y")) - FIRE_YEAR >= fire_min_yr) %>%
+    st_union()
+
+   
+  st_write(fires, file.path(out_dir, "fires_filtered.gpkg"), append = FALSE)
+  
   
 
 

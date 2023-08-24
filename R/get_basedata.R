@@ -9,21 +9,29 @@
 #'
 #' @examples
 #' \dontrun{
-#' get_basedata(aoi, out_path)
+#' get_basedata(in_aoi, out_path)
 #' }
 
 get_basedata <- function(in_aoi, out_path){
 
+  if(missing(in_aoi)) stop("'aoi' is missing with no default")
 
- get_VRI(in_aoi, out_path)
- get_water(in_aoi, out_path)
- get_harvest(in_aoi, out_path)
- get_water(in_aoi, out_path)
- get_streams(in_aoi, out_path)
- get_fires(in_aoi, out_path)
- get_dem(in_aoi, out_path)
+  # Second, detect object type and convert where necessary
+  if(!inherits(in_aoi, c("sf", "sfc")))
+    stop("'aoi' is not an sf or sfc object.")
 
+  # Detect the CRS of the sf object
+  if(is.na(sf::st_crs(in_aoi)))
+    stop("CRS is not assigned. Use sf::st_crs() to assign a valid CRS to in_aoi")
 
+  if(sf::st_is_longlat(in_aoi)) {
+    cat("Input CRS is Lat/Long format. Transforming to EPSG 3005 (BC Albers) for processing\n")
+    epsg <- 3005L
+    in_crs <- sf::st_crs(in_aoi)
+    in_aoi <- sf::st_transform(in_aoi, epsg) %>% sf::st_set_agr("constant")
+  }
+
+  epsg <- st_crs(in_aoi)
 
   # 1: download vri
 
@@ -173,7 +181,16 @@ get_basedata <- function(in_aoi, out_path){
       return(TRUE)
     }
 
-    message("\rBasedata downloaded")
+    message("\rstart downloading data")
 
+    get_VRI(in_aoi, out_path)
+    get_water(in_aoi, out_path)
+    get_harvest(in_aoi, out_path)
+    get_water(in_aoi, out_path)
+    get_streams(in_aoi, out_path)
+    get_fires(in_aoi, out_path)
+    get_dem(in_aoi, out_path)
+
+    message("\rBasedata downloaded")
 
 }
