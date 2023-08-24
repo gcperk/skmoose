@@ -4,6 +4,7 @@
 #' @param out_path file folder location where raw data will be saved (as gpkg)
 #'
 #' @return a series of geopackages with used as base data from moose strtatification
+#' @importFrom magrittr "%>%"
 #' @export
 #'
 #' @examples
@@ -17,9 +18,9 @@ get_basedata <- function(in_aoi, out_path){
  get_water(in_aoi, out_path)
  get_harvest(in_aoi, out_path)
  get_water(in_aoi, out_path)
-  get_streams(in_aoi, out_path)
-  get_fires(in_aoi, out_path)
-  get_dem(in_aoi, out_path)
+ get_streams(in_aoi, out_path)
+ get_fires(in_aoi, out_path)
+ get_dem(in_aoi, out_path)
 
 
 
@@ -29,7 +30,7 @@ get_basedata <- function(in_aoi, out_path){
     message("\rDownloading VRI layers")
 
     vri <- bcdata::bcdc_query_geodata("2ebb35d8-c82f-4a17-9c96-612ac3532d55") %>%
-      bcdata::filter(INTERSECTS(in_aoi)) %>%
+      bcdata::filter(bcdata::INTERSECTS(in_aoi)) %>%
       bcdata::select(c("SPECIES_CD_1", "SPECIES_CD_2","SPECIES_CD_3","SPECIES_CD_4","SPECIES_CD_5","SPECIES_CD_6",
                        "BCLCS_LEVEL_3")) %>% # Treed sites
       bcdata::collect() %>%
@@ -56,7 +57,7 @@ get_basedata <- function(in_aoi, out_path){
       lakes <- bcdata::bcdc_query_geodata("cb1e3aba-d3fe-4de1-a2d4-b8b6650fb1f6") %>%
         bcdata::filter(INTERSECTS(in_aoi)) %>%
         bcdata::collect() %>%
-        dplyr::select(id, WATERBODY_TYPE, AREA_HA) %>%
+        dplyr::select("id", "WATERBODY_TYPE", "AREA_HA") %>%
         dplyr::filter(AREA_HA > 1000)
 
       st_write(lakes, file.path(out_path, "lakes.gpkg"), append = FALSE)
@@ -67,7 +68,7 @@ get_basedata <- function(in_aoi, out_path){
       wetlands <- bcdata::bcdc_query_geodata("93b413d8-1840-4770-9629-641d74bd1cc6") %>%
         bcdata::filter(INTERSECTS(in_aoi)) %>%
         bcdata::collect() %>%
-        dplyr::select(id, WATERBODY_TYPE, AREA_HA)
+        dplyr::select("id", "WATERBODY_TYPE", "AREA_HA")
 
       wetlands <- wetlands %>% dplyr::filter(AREA_HA <= 1000) %>%
         sf::st_union()
