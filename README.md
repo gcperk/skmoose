@@ -6,7 +6,18 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of skmoose is to …
+Skmoose package is a series of steps to estimate moose quality within
+survey blocks. This package was written for the Skeena regional Moose
+survey group under Ministry of Water, Lands, Resources and XXXXXX.
+
+Where possible all data used in the process is extracted from the BC
+data catalogue, using the bcdata and bcmaps packages. These ensure up to
+date information. Optional additional data can be extracted including
+confidential survey telemetry data, however this is dependant on outside
+sources.
+
+A detailed step vignette is provides to step through the process using a
+test dataset provided as part of the package.
 
 ## Installation
 
@@ -46,10 +57,3 @@ up-to-date. `devtools::build_readme()` is handy for this. You could also
 use GitHub Actions to re-render `README.Rmd` every time you push. An
 example workflow can be found here:
 <https://github.com/r-lib/actions/tree/v1/examples>.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
