@@ -60,7 +60,7 @@ get_basedata <- function(in_aoi, out_path){
         dplyr::select("id", "WATERBODY_TYPE", "AREA_HA") %>%
         dplyr::filter("AREA_HA" > 1000)
 
-      st_write(lakes, file.path(out_path, "lakes.gpkg"), append = FALSE)
+      sf::st_write(lakes, file.path(out_path, "lakes.gpkg"), append = FALSE)
 
 
   # download wetlands
@@ -70,7 +70,7 @@ get_basedata <- function(in_aoi, out_path){
         bcdata::collect() %>%
         dplyr::select("id", "WATERBODY_TYPE", "AREA_HA")
 
-      wetlands <- wetlands %>% dplyr::filter(AREA_HA <= 1000) %>%
+      wetlands <- wetlands %>% dplyr::filter("AREA_HA" <= 1000) %>%
         sf::st_union()
 
         sf::st_write(wetlands, file.path(out_path, "wetlands.gpkg"), append = FALSE)
