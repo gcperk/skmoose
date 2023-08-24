@@ -1,12 +1,17 @@
 Package: skmoose
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Stratifies Moose Survey Blocks
 Version: 0.1.0
-Author: Who wrote it
+Author: person(
+      "Genevieve", "Perkins, , 
+      "info@ninoxconsulting.ca",
+      role = c("aut", "cre"), 
+      comment = c(ORID = "YOUR-ORCID-ID")
 Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: AGPL (>= 3)
+Description: Extract all required base data to assess moose inaccessible areas    and mooose
+browse areas for a given area of interest. This package then outputs a table to assess high,     
+medium and low predicted moose habitat. 
+License: Apache License (>= 2)
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/gcperk/skmoose
