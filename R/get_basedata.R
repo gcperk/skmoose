@@ -1,5 +1,3 @@
-
-
 #' Get base data required from bc data catalogue
 #'
 #' @param aoi an sf object containing a polygon with the area of interest to extract to
@@ -11,6 +9,16 @@
 #' @examples
 
 get_basedata <- function(aoi, out_path){
+
+
+  get_VRI(in_aoi, out_path)
+  get_water(in_aoi, out_path)
+  get_harvest(in_aoi, out_path)
+  get_water(in_aoi, out_path)
+  get_streams(in_aoi, out_path)
+  get_fires(in_aoi, out_path)
+  get_dem(in_aoi, out_path)
+
 
 
   # 1: download vri
@@ -28,9 +36,11 @@ get_basedata <- function(aoi, out_path){
 
     st_write(vri, file.path(out_path, "vri.gpkg"), append = FALSE)
 
+    return(TRUE)
+    }
 
 
-  # download water bodies
+  # 2. download water bodies
 
   get_water <- function(in_aoi, out_path) {
 
@@ -62,23 +72,33 @@ get_basedata <- function(aoi, out_path){
 
       st_write(wetlands, file.path(out_path, "wetlands.gpkg"), append = FALSE)
 
+      return(TRUE)
     }
 
-  # download stream index
+  # 3. download stream index
+
+  get_streams <- function(in_aoi, out_path) {
+
+    message("\rDownloading streams")
+
+  streams <- bcdc_query_geodata("92344413-8035-4c08-b996-65a9b3f62fca") %>%
+    bcdata::filter(INTERSECTS(in_aoi)) %>%
+    bcdata::collect() %>%
+    dplyr::select(c("id", "STREAM_ORDER"))%>%
+    sf::st_zm()
 
 
-  # add either bc data catalogue or poisson verions
+   sf::st_write(streams, file.path(out_path, "streams.gpkg"), append = FALSE)
+
+   return(TRUE)
+      }
 
 
-
-
-
-
-
-  # download fire history
+  # 4. download fire history
 
   get_fires <- function(in_aoi, out_path) {
-      message("\rDownloading recent fire disturbance (<40 years and >5)")
+
+      message("\rDownloading fire disturbance")
 
       fire_records <- c("cdfc2d7b-c046-4bf0-90ac-4897232619e1",
                         "22c7cb44-1463-48f7-8e47-88857f207702")
@@ -107,11 +127,13 @@ get_basedata <- function(aoi, out_path){
         print("No recent fire disturbance in area of interest") } else {
           sf::st_write(fires_all, file.path(out_path, "fire.gpkg"), append = FALSE)
         }
-    }
+
+      return(TRUE)
+      }
 
 
 
-  # download cutblocks
+  # 5. download cutblocks
 
   get_harvest <- function(in_aoi, out_path) {
 
@@ -124,12 +146,11 @@ get_basedata <- function(aoi, out_path){
 
     st_write(cutblocks, file.path(out_path, "cutblocks.gpkg"), append = FALSE)
 
-
+    return(TRUE)
+    }
 
 
   # download DEM via CDED package
-
-    library(terra)
 
     get_dem <- function(in_aoi, out_path){
 
@@ -145,12 +166,10 @@ get_basedata <- function(aoi, out_path){
       #write out dem # in case
       terra::writeRaster(rslope, file.path(out_path, "slope.tif"), overwrite = TRUE)
 
+      return(TRUE)
     }
 
-
-
-
-
+    message("\rBasedata downloaded")
 
 
 }
