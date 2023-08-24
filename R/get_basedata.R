@@ -1,12 +1,13 @@
 #' Get base data required from bc data catalogue
 #'
-#' @param aoi an sf object containing a polygon with the area of interest to extract to
+#' @param in_aoi an sf object containing a polygon with the area of interest to extract to
 #' @param out_path file folder location where raw data will be saved (as gpkg)
 #'
-#' @return
+#' @return a series of geopackages with used as base data from moose strtatification
 #' @export
 #'
 #' @examples
+#' get_basedata(aoi, out_path = (file.path("data")))
 
 
 get_basedata <- function(aoi, out_path){

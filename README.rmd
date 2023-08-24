@@ -13,10 +13,10 @@ knitr::opts_chunk$set(
 )
 ```
 
-# libminer
+# skmoose
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/gcperk/libminer/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/gcperk/libminer/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/gcperk/skmoose/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/gcperk/skmoose/actions/workflows/R-CMD-check.yaml)
 [![R-CMD-check](https://github.com/gcperk/skmoose/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/gcperk/skmoose/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
@@ -24,11 +24,11 @@ The goal of libminer is to provide summary of a users library. It is a toy packa
 
 ## Installation
 
-You can install the development version of libminer from [GitHub](https://github.com/) with:
+You can install the development version of skmoose from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("gcperk/libminer")
+devtools::install_github("gcperk/skmoose")
 ```
 
 ## Example
@@ -36,9 +36,8 @@ devtools::install_github("gcperk/libminer")
 This is a basic example which shows you how to solve a common problem:
 
 ```{r example}
-library(libminer)
+library(skmoose)
 
-lib_summary()
-lib_summary(sizes = TRUE)
+
 ```
 
