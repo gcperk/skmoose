@@ -10,7 +10,7 @@
 #' get_basedata(aoi, out_path = (file.path("data")))
 
 
-get_basedata <- function(aoi, out_path){
+get_basedata <- function(in_aoi, out_path){
 
 
   get_VRI(in_aoi, out_path)
@@ -25,10 +25,10 @@ get_basedata <- function(aoi, out_path){
 
   # 1: download vri
 
-  get_VRI <- function(aoi, out_path) {
+  get_VRI <- function(in_aoi, out_path) {
     message("\rDownloading VRI layers")
 
-    vri <- bcdc_query_geodata("2ebb35d8-c82f-4a17-9c96-612ac3532d55") %>%
+    vri <- bcdata::bcdc_query_geodata("2ebb35d8-c82f-4a17-9c96-612ac3532d55") %>%
       bcdata::filter(INTERSECTS(in_aoi)) %>%
       bcdata::select(c("SPECIES_CD_1", "SPECIES_CD_2","SPECIES_CD_3","SPECIES_CD_4","SPECIES_CD_5","SPECIES_CD_6",
                        "BCLCS_LEVEL_3")) %>% # Treed sites
@@ -36,7 +36,7 @@ get_basedata <- function(aoi, out_path){
       {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
 
 
-    st_write(vri, file.path(out_path, "vri.gpkg"), append = FALSE)
+      sf::st_write(vri, file.path(out_path, "vri.gpkg"), append = FALSE)
 
     return(TRUE)
     }
@@ -53,7 +53,7 @@ get_basedata <- function(aoi, out_path){
       # 1 Square Kilometer = 100.00 Hectare
 
       # Uses date filter which filters lakes
-      lakes <- bcdc_query_geodata("cb1e3aba-d3fe-4de1-a2d4-b8b6650fb1f6") %>%
+      lakes <- bcdata::bcdc_query_geodata("cb1e3aba-d3fe-4de1-a2d4-b8b6650fb1f6") %>%
         bcdata::filter(INTERSECTS(in_aoi)) %>%
         bcdata::collect() %>%
         dplyr::select(id, WATERBODY_TYPE, AREA_HA) %>%
@@ -64,15 +64,15 @@ get_basedata <- function(aoi, out_path){
 
   # download wetlands
 
-      wetlands <- bcdc_query_geodata("93b413d8-1840-4770-9629-641d74bd1cc6") %>%
+      wetlands <- bcdata::bcdc_query_geodata("93b413d8-1840-4770-9629-641d74bd1cc6") %>%
         bcdata::filter(INTERSECTS(in_aoi)) %>%
         bcdata::collect() %>%
         dplyr::select(id, WATERBODY_TYPE, AREA_HA)
 
       wetlands <- wetlands %>% dplyr::filter(AREA_HA <= 1000) %>%
-        st_union()
+        sf::st_union()
 
-      st_write(wetlands, file.path(out_path, "wetlands.gpkg"), append = FALSE)
+        sf::st_write(wetlands, file.path(out_path, "wetlands.gpkg"), append = FALSE)
 
       return(TRUE)
     }
@@ -83,7 +83,7 @@ get_basedata <- function(aoi, out_path){
 
     message("\rDownloading streams")
 
-  streams <- bcdc_query_geodata("92344413-8035-4c08-b996-65a9b3f62fca") %>%
+  streams <- bcdata::bcdc_query_geodata("92344413-8035-4c08-b996-65a9b3f62fca") %>%
     bcdata::filter(INTERSECTS(in_aoi)) %>%
     bcdata::collect() %>%
     dplyr::select(c("id", "STREAM_ORDER"))%>%
@@ -141,12 +141,12 @@ get_basedata <- function(aoi, out_path){
 
       message("\rDownloading cutblock layers")
 
-      cutblocks <- bcdc_query_geodata("b1b647a6-f271-42e0-9cd0-89ec24bce9f7") %>%
+      cutblocks <- bcdata::bcdc_query_geodata("b1b647a6-f271-42e0-9cd0-89ec24bce9f7") %>%
         bcdata::filter(INTERSECTS(in_aoi)) %>%
         bcdata::select(c("HARVEST_YEAR")) %>%
         bcdata::collect()
 
-    st_write(cutblocks, file.path(out_path, "cutblocks.gpkg"), append = FALSE)
+    sf::st_write(cutblocks, file.path(out_path, "cutblocks.gpkg"), append = FALSE)
 
     return(TRUE)
     }
