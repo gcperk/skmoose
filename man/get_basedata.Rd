@@ -18,7 +18,7 @@ a series of geopackages with used as base data from moose strtatification
 Get base data required from bc data catalogue
 }
 \examples{
-#' \dontrun{
+\dontrun{
 get_basedata(aoi, out_path)
 }
 }

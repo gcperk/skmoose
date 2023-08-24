@@ -18,6 +18,7 @@ Imports:
     bcdata,
     bcmaps,
     dplyr,
+    fs,
     magrittr,
     sf,
     terra

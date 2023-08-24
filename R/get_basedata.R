@@ -12,7 +12,6 @@
 #' get_basedata(aoi, out_path)
 #' }
 
-
 get_basedata <- function(in_aoi, out_path){
 
 

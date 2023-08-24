@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(skmoose)
+library(sf)
 ```
 
 # Introduction
@@ -27,8 +28,6 @@ Read in the survey blocks file. We will use a test subset provided with the pack
 ```{r}
 # read in the data 
 
-data(skmoose)
-
 
 # bks <- 
 #   
@@ -36,26 +35,15 @@ data(skmoose)
 # system.file("extdata", "survey_blocks.gpkg", package = "skmoose", mustWork = TRUE)
 #   
 #   
-  skmoose_example <- function(path = NULL) {
-  if (is.null(path)) {
-    dir(system.file("extdata", package = "skmoose"))
-  } else {
-    system.file("extdata", path, package = "skmoose", mustWork = TRUE)
-  }
-}
 #   
 #   skmoose_example()
 #   
 data_location <- fs::path_package("extdata", package = "skmoose")
-data_file <- skmoose_example()
+data_file <- skmoose::skmoose_example()
 
 bks_name <- file.path(data_location, data_file)
 bks <- sf::st_read(bks_name)
   
-
-
-
-
 
 
 ```
