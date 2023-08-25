@@ -78,7 +78,7 @@ sf::st_write(aoi, file.path(out_dir, "aoi.gpkg"), append = FALSE)
 # extract all base data
 
 library(foreach)
-basedata <- foreach(x = blockno[1:10]) %do% {
+basedata <- foreach(x = blockno[11:50]) %do% {
   
   #x = blockno[127]
   
@@ -116,9 +116,9 @@ This includes :
 ```{r}
 
 
-uninhab <- foreach(x = blockno[1:22]) %do% {
+uninhab <- foreach(x = blockno[11:50]) %do% {
   
-  x = blockno[22]
+  #x = blockno[22]
   
   tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
   temp_out_dir <- file.path(out_dir, x)
@@ -165,29 +165,25 @@ uninhab <- foreach(x = blockno[1:22]) %do% {
    st_write(steep_sf, file.path(temp_out_dir, "steep.gpkg"), append = FALSE)
    }
    
-
-   
-   
-   
-   
- 
-  # combine uninhabited areas for moose
-
-   merge_uninhabitable
-   
-   
-   ####  check if exist and then merge if it does  
-   
-    unhab <- st_union(rockice, high_elev_sf, steep_sf, largelakes)
-    unhab <- st_union(largelakes, rockice)
-    unhab <- st_union(largelakes, largelakes, largelakes)
-    unhab <- unhab %>% 
-      st_union()
-    
-    # crop to the study area 
-   unhab_all <- st_crop(unhab, tmp_aoi)
-   
-   st_write(unhab, file.path(temp_out_dir, "uninhabitable.gpkg"), append = FALSE)
+     
+  # 
+  # # combine uninhabited areas for moose
+  # 
+  #  merge_uninhabitable
+  #  
+  #  
+  #  ####  check if exist and then merge if it does  
+  #  
+  #   unhab <- st_union(rockice, high_elev_sf, steep_sf, largelakes)
+  #   unhab <- st_union(largelakes, rockice)
+  #   unhab <- st_union(largelakes, largelakes, largelakes)
+  #   unhab <- unhab %>% 
+  #     st_union()
+  #   
+  #   # crop to the study area 
+  #  unhab_all <- st_crop(unhab, tmp_aoi)
+  #  
+  #  st_write(unhab, file.path(temp_out_dir, "uninhabitable.gpkg"), append = FALSE)
   
    
  
