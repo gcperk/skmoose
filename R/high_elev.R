@@ -20,11 +20,11 @@ high_elevl <- function(dem, elev_thresh = 1500) {
   high_elev_poly <- terra::as.polygons(high_elev)
 
 
-  high_elev_sf <- st::st_as_sf(high_elev_poly) %>%
-    st::st_transform(3005) %>%
-    st::st_union(by_feature = FALSE) %>%
-    st::st_cast("MULTIPOLYGON") %>%
-    st::st_union
+  high_elev_sf <- sf::st_as_sf(high_elev_poly) %>%
+    sf::st_transform(3005) %>%
+    sf::st_union(by_feature = FALSE) %>%
+    sf::st_cast("MULTIPOLYGON") %>%
+    sf::st_union
 
 
   return(high_elev_sf)
