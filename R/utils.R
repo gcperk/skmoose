@@ -3,7 +3,7 @@
 #' @param path default location as NULL
 #'
 #' @return TRUE
-#' @noRd
+#' @export
 skmoose_example <- function(path = NULL) {
   if (is.null(path)) {
     dir(system.file("extdata", package = "skmoose"))
