@@ -164,44 +164,23 @@ o	Skeena Wildlife Ecological Resource Model- Winter forage output
 
   
 
-  # harvest 
-  cutblock_min_yr = 5
-  cutblock_max_yr = 40 
-  
-  
+ # get recent harvest 
   cutblocks <- st_read(file.path(out_dir, "cutblocks.gpkg"))
+  cutblocks_yrs <- cutblocks_recent(cutblocks, cutblock_min_yr = 5, cutblock_max_yr = 40)
  
-  cutblocks_yrs <- cutblocks %>%
-    dplyr::mutate(yrs_since_burn = (as.numeric(format(Sys.time(), "%Y")) - HARVEST_YEAR))%>%
-    st_cast("MULTIPOLYGON")
-  
-  cutblocks_yrs <- cutblocks_yrs %>%
-    filter(yrs_since_burn >=  cutblock_min_yr | yrs_since_burn <= cutblock_max_yr)
-
   st_write(cutblocks_yrs, file.path(out_dir, "cutblocks_filtered.gpkg"), append = FALSE)
 
 
   
-   # fire years 
-  
-  fire_min_yr = 5
-  fire_max_yr = 40 
+  # get recent fire years 
+
   
   fires <- st_read(file.path(out_dir, "fire.gpkg"))
-
-  # filter for recent fires
-    fires <- fires %>%
-        dplyr::select(id, FIRE_YEAR)%>%
-     dplyr::filter(as.numeric(format(Sys.time(), "%Y")) - FIRE_YEAR <= fire_max_yr) %>%
-        dplyr::filter(as.numeric(format(Sys.time(), "%Y")) - FIRE_YEAR >= fire_min_yr) %>%
-    st_union()
-
+  fires_filtered <- fires_recent(fires, fire_min_yr = 5, fire_max_yr = 40 )
   
   st_write(fires, file.path(out_dir, "fires_filtered.gpkg"), append = FALSE)
   
-  
-  
-     # stream 
+  # get stream order and buffer by stream order, stream order 3 - 8 is 150m buffer, stream order 9 bufferd by 500m 
   
 # Buffered 3-8 order streams from FWA stream dataset by 150m (dissolved) 
 #- 9th order streams buffered by 500 meters. 
