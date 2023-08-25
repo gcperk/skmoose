@@ -19,6 +19,6 @@ Get base data required from bc data catalogue
 }
 \examples{
 \dontrun{
-get_basedata(aoi, out_path)
+get_basedata(in_aoi, out_path)
 }
 }
