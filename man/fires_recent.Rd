@@ -7,11 +7,11 @@
 fires_recent(fires, fire_min_yr = 5, fire_max_yr = 40)
 }
 \arguments{
-\item{cutblocks}{sf object with all fires}
+\item{fires}{sf object with all fires}
 
-\item{cutblock_min_yr}{numeric minimum age since fire, default = 5.}
+\item{fire_min_yr}{numeric minimum age since fire, default = 5.}
 
-\item{cutblock_max_yr}{numeric maximum age since fire, default = 40}
+\item{fire_max_yr}{numeric maximum age since fire, default = 40}
 }
 \value{
 sf object with filtered fires
