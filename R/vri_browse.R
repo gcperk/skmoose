@@ -8,8 +8,10 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' vri_browse(vri, species_codes = c("AT", "AC","EP","SB"))
-#'
+#' }
+
 vri_browse <-
   function(vri,
            species_codes = c("AT", "AC", "EP", "SB")) {

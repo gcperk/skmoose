@@ -18,6 +18,7 @@ sf object with single polygon with deciduous browse
 Filter Moose Browse Species
 }
 \examples{
+\dontrun{
 vri_browse(vri, species_codes = c("AT", "AC","EP","SB"))
-
+}
 }
