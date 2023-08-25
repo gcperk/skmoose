@@ -1,7 +1,7 @@
 #' Select recent fire years for Moose habitat
-#' @param cutblocks sf object with all fires
-#' @param cutblock_min_yr numeric minimum age since fire, default = 5.
-#' @param cutblock_max_yr numeric maximum age since fire, default = 40
+#' @param fires sf object with all fires
+#' @param fire_min_yr numeric minimum age since fire, default = 5.
+#' @param fire_max_yr numeric maximum age since fire, default = 40
 #'
 #' @return sf object with filtered fires
 #' @export
