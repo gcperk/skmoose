@@ -25,18 +25,22 @@ library(terra)
 
 # Introduction
 
-This package assists in determining moose quality and extent of usable habitat for a given study area. 
+This package assists in determining moose quality and extent of usable habitat for each block given study area. 
 
 Read in the survey blocks file. We will use a test subset provided with the package as an example. Note this file is preffered to be in .gpkg format, however see below for an example of converting a .shp to .gpkg file. 
 
 ```{r}
 
-# read in the data 
+# read in the test data 
 
 data_location <- fs::path_package("extdata", package = "skmoose")
 data_file <- skmoose::skmoose_example()
-bks_name <- file.path(data_location, data_file)
+#bks_name <- file.path(data_location, data_file)
 
+
+# or the full data set: 
+
+bks_name <- file.path("C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_block_surveyR\\02.Data", "Tweedsmuir-SRBblocks.gpkg")
 
 # read in and format the data 
 aoi <- sf::st_read(file.path(bks_name))
@@ -46,8 +50,10 @@ aoi <- aoi %>%
   st_zm()
 
 
+blockno <- as.list(unique(aoi$bkname))
+  
 # simplify the blocks into a single polygon to extract for the entire area. 
-aoi_simple <- st_union(aoi)
+#aoi_simple <- st_union(aoi)
 
 ```
 
@@ -64,13 +70,36 @@ if (!dir.exists(out_dir )){
   print("dir exists")
 }
 
+sf::st_write(aoi, file.path(out_dir, "aoi.gpkg"), append = FALSE)
 
 ```
 
 ```{r}
 # extract all base data
 
-get_basedata(in_aoi = aoi_simple, out_path = out_dir)
+library(foreach)
+basedata <- foreach(x = blockno[1:10]) %do% {
+  
+  #x = blockno[127]
+  
+  tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
+  temp_out_dir <- file.path(out_dir, x)
+  
+      if (!dir.exists(temp_out_dir)){
+        dir.create(temp_out_dir )
+      }else{
+        print("dir exists")
+      }
+
+      get_basedata(in_aoi = tmp_aoi, out_path = temp_out_dir)
+  
+  #print(x)
+  
+}
+
+
+#get_basedata(in_aoi = aoi_simple, out_path = out_dir)
+#get_basedata(in_aoi = aoi, out_path = out_dir)
 
 
 ```
@@ -85,48 +114,88 @@ This includes :
 
 
 ```{r}
-# 1. extract rock and ice areas
-
-rockice <- st_read(file.path(out_dir, "vri.gpkg")) %>%
-  dplyr::filter(BCLCS_LEVEL_3 == "A") %>%
-  dplyr::select(id) %>%
-  st_union()%>%
-  st_cast("MULTIPOLYGON")
-
-sf::st_write(rockice, file.path(out_dir, "rockice.gpkg"))
 
 
-# 2. filter lakes with >1 km2
+uninhab <- foreach(x = blockno[1:22]) %do% {
+  
+  x = blockno[22]
+  
+  tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
+  temp_out_dir <- file.path(out_dir, x)
+      
+  # 1. extract rock and ice areas
+    
+  rockice <- st_read(file.path(temp_out_dir, "vri.gpkg")) %>%
+      dplyr::filter(BCLCS_LEVEL_3 == "A") %>%
+      dplyr::select(id) %>%
+      st_union()%>%
+      st_cast("MULTIPOLYGON")
+    
+     if(length(nrow(rockice)) > 0 ){
+      sf::st_write(rockice, file.path(temp_out_dir, "rockice.gpkg"), append = FALSE)
+    }
 
-largelakes <- st_read(file.path(out_dir, "lakes.gpkg")) %>%
-  dplyr::filter(AREA_HA > 1000) %>%
-  st_union()
+  # 2. filter lakes with >1 km2
 
-st_write(largelakes , file.path(out_dir, "high_elevation.gpkg"))
+  largelakes <- st_read(file.path(temp_out_dir, "lakes.gpkg")) %>%
+      dplyr::filter(AREA_HA > 100) %>%
+      st_union()
 
+    if(length(nrow(largelakes)) > 0 ){
+    st_write(largelakes , file.path(temp_out_dir, "largelakes.gpkg"), append = FALSE)
+    }
 
-# 3. filter elevations above threshold value
+  # 3. filter elevations above threshold value
 
-eval_threshold = 1500
+  eval_threshold = 1500
 
-trim <- terra::rast(file.path(out_dir, "dem.tif"))
-high_elev_sf <- high_elev(trim, eval_threshold )
+  trim <- terra::rast(file.path(temp_out_dir, "dem.tif"))
+  high_elev_sf <- high_elev(trim, eval_threshold )
+  
+    if(length(nrow(high_elev_sf)) > 0 ){
+    st_write(high_elev_sf , file.path(temp_out_dir, "high_elevation.gpkg"), append = FALSE)
+    }
 
-st_write(high_elev_sf , file.path(out_dir, "high_elevation.gpkg"))
+  # 4. filter high slope 
+   slope_threshold = 55
+  
+   steep_sf <- steep_slope(trim, slope_threshold)
+   
+   if(length(nrow(steep_sf)) > 0 ){
+   st_write(steep_sf, file.path(temp_out_dir, "steep.gpkg"), append = FALSE)
+   }
+   
 
+   
+   
+   
+   
+ 
+  # combine uninhabited areas for moose
 
-# 4. filter high slope 
-
-slope_threshold = 55
-
- steep_sf <- steep_slope(trim, slope_threshold)
-
- st_write(steep_sf, file.path(out_dir, "steep.gpkg"))
-
+   merge_uninhabitable
+   
+   
+   ####  check if exist and then merge if it does  
+   
+    unhab <- st_union(rockice, high_elev_sf, steep_sf, largelakes)
+    unhab <- st_union(largelakes, rockice)
+    unhab <- st_union(largelakes, largelakes, largelakes)
+    unhab <- unhab %>% 
+      st_union()
+    
+    # crop to the study area 
+   unhab_all <- st_crop(unhab, tmp_aoi)
+   
+   st_write(unhab, file.path(temp_out_dir, "uninhabitable.gpkg"), append = FALSE)
+  
+   
+ 
+}
 
 
  
- # compine uninhabited areas for moose
+ # comine uninhabited areas for moose
 
 unhab <- st_intersection(rockice, high_elev_sf, steep_sf, largelakes)
 
@@ -154,68 +223,105 @@ o	Skeena Wildlife Ecological Resource Model- Winter forage output
 
 ```{r}
 
-# get deciduous leading species
+uninhab <- foreach(x = blockno[1:5]) %do% {
+  
+    x = blockno[1]
+    print(x)
+  
+    tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
+    temp_out_dir <- file.path(out_dir, x)
 
+    
+    # get deciduous leading species
     vri <- st_read(file.path(out_dir, "vri.gpkg"))
     species_codes = c("AT", "AC","EP","SB")
     decid <- vri_browse(vri, species_codes)
 
-    st_write(decid , file.path(out_dir, "vri_decid.gpkg") , append = FALSE)
-
+    
+    if(length(nrow(decid)) > 0 ){
+    st_write(decid , file.path(temp_out_dir, "vri_decid.gpkg") , append = FALSE)
+    }
+    
   
-
- # get recent harvest 
-  cutblocks <- st_read(file.path(out_dir, "cutblocks.gpkg"))
-  cutblocks_yrs <- cutblocks_recent(cutblocks, cutblock_min_yr = 5, cutblock_max_yr = 40)
- 
-  st_write(cutblocks_yrs, file.path(out_dir, "cutblocks_filtered.gpkg"), append = FALSE)
+   # get recent harvest 
+    
+    if("cutblocks.gpkg"  %in% list.files(temp_out_dir)){
+      
+      print("contains cutblocks")
+  
+      cutblocks <- st_read(file.path(temp_out_dir, "cutblocks.gpkg"))
+      cutblocks_yrs <- cutblocks_recent(cutblocks, cutblock_min_yr = 5, cutblock_max_yr = 40)
+    if(length(nrow(decid)) > 0 ){
+    st_write(cutblocks_yrs, file.path(temp_out_dir, "cutblocks_filtered.gpkg"), append = FALSE)
+    }
+      }
 
 
   
   # get recent fire years 
 
-  
+   if("fire.gpkg"  %in% list.files(temp_out_dir)){
+      
+      print("contains fire")
+     
   fires <- st_read(file.path(out_dir, "fire.gpkg"))
   fires_filtered <- fires_recent(fires, fire_min_yr = 5, fire_max_yr = 40 )
   
-  st_write(fires, file.path(out_dir, "fires_filtered.gpkg"), append = FALSE)
-  
+   if(length(nrow(fires)) > 0 ){
+  st_write(fires, file.path(temp_out_dir, "fires_filtered.gpkg"), append = FALSE)
+      }
+   }
+    
+    
   # get stream order and buffer by stream order, stream order 3 - 8 is 150m buffer, stream order 9 bufferd by 500m 
   
 # Buffered 3-8 order streams from FWA stream dataset by 150m (dissolved) 
 #- 9th order streams buffered by 500 meters. 
   
-    streams<- st_read(file.path(out_dir, "streams.gpkg")) 
-    
+   if("stream.gpkg"  %in% list.files(temp_out_dir)){
+      
+      print("contains streams")
+
+    streams <- st_read(file.path(temp_out_dir, "streams.gpkg")) 
     stream38 <- buffer_streams(streams)
+    stream9 <- buffer_streams(streams, 9, 500)
+  
     
+    if(length(nrow(stream38 )) > 0 ){
+   st_write(stream38 , file.path(temp_out_path, "streams3_8.gpkg"), append = FALSE)
+}
 
-  stream9 <- st_read(file.path(out_dir, "streams.gpkg")) %>% 
-      dplyr::filter(STREAM_ORDER == 9) %>%
-      sf::st_buffer(500) %>%
-      sf::st_union()
-  
-  
-  
-  
-  
+    if(length(nrow(stream9 )) > 0 ){
+   st_write(stream9 , file.path(temp_out_path, "streams9.gpkg"), append = FALSE)
+}
+    
+    
+   }
+ 
+     
   # wetlands 
-  
-   wetlands <- st_read(file.path(out_dir, "wetlands.gpkg")) 
-      dplyr::filter(AREA_HA <= 1000) %>%
-      sf::st_buffer(500) %>%
+    
+    
+   if("wetlands.gpkg"  %in% list.files(temp_out_dir)){
+      
+      print("contains wetlands")
+     
+   wetlands <- st_read(file.path(temp_out_dir, "wetlands.gpkg")) 
+      dplyr::filter(AREA_HA <= 100) %>%
       sf::st_union()
 
-  st_write(wetlands, file.path(out_path, "wetland_filter.gpkg"), append = FALSE)
+       if(length(nrow(wetlands)) > 0 ){
+   st_write(wetlands, file.path(temp_out_path, "wetland_filter.gpkg"), append = FALSE)
+}
 
-
+   }
   
   
   #Skeena Wildlife Ecological Resource Model- Winter forage output 
   
   
   
-  
+}
   
 
 ```
