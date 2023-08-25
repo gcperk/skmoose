@@ -4,6 +4,11 @@
 #'
 #' @return TRUE
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' skmoose_example()
+#' }
 skmoose_example <- function(path = NULL) {
   if (is.null(path)) {
     dir(system.file("extdata", package = "skmoose"))
@@ -11,3 +16,4 @@ skmoose_example <- function(path = NULL) {
     system.file("extdata", path, package = "skmoose", mustWork = TRUE)
   }
 }
+
