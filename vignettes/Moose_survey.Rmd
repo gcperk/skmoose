@@ -78,9 +78,11 @@ sf::st_write(aoi, file.path(out_dir, "aoi.gpkg"), append = FALSE)
 # extract all base data
 
 library(foreach)
-basedata <- foreach(x = blockno[11:50]) %do% {
+registerDoSEQ()
+
+basedata <- foreach(x = blockno[51:60]) %dopar% {
   
-  #x = blockno[127]
+  x = blockno[125]
   
   tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
   temp_out_dir <- file.path(out_dir, x)
@@ -116,9 +118,9 @@ This includes :
 ```{r}
 
 
-uninhab <- foreach(x = blockno[11:50]) %do% {
+uninhab <- foreach(x = blockno[51:60]) %dopar% {
   
-  #x = blockno[22]
+  x = blockno[125]
   
   tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
   temp_out_dir <- file.path(out_dir, x)
@@ -131,7 +133,7 @@ uninhab <- foreach(x = blockno[11:50]) %do% {
       st_union()%>%
       st_cast("MULTIPOLYGON")
     
-     if(length(nrow(rockice)) > 0 ){
+     if(length(st_is_empty(rockice)< 1)){
       sf::st_write(rockice, file.path(temp_out_dir, "rockice.gpkg"), append = FALSE)
     }
 
@@ -141,8 +143,8 @@ uninhab <- foreach(x = blockno[11:50]) %do% {
       dplyr::filter(AREA_HA > 100) %>%
       st_union()
 
-    if(length(nrow(largelakes)) > 0 ){
-    st_write(largelakes , file.path(temp_out_dir, "largelakes.gpkg"), append = FALSE)
+     if(length(st_is_empty(largelakes)< 1)){
+    st_write(largelakes, file.path(temp_out_dir, "largelakes.gpkg"), append = FALSE)
     }
 
   # 3. filter elevations above threshold value
@@ -152,7 +154,7 @@ uninhab <- foreach(x = blockno[11:50]) %do% {
   trim <- terra::rast(file.path(temp_out_dir, "dem.tif"))
   high_elev_sf <- high_elev(trim, eval_threshold )
   
-    if(length(nrow(high_elev_sf)) > 0 ){
+  if(length(st_is_empty(high_elev_sf )< 1)){
     st_write(high_elev_sf , file.path(temp_out_dir, "high_elevation.gpkg"), append = FALSE)
     }
 
@@ -161,12 +163,93 @@ uninhab <- foreach(x = blockno[11:50]) %do% {
   
    steep_sf <- steep_slope(trim, slope_threshold)
    
-   if(length(nrow(steep_sf)) > 0 ){
+   if(length(st_is_empty(steep_sf )< 1)){
    st_write(steep_sf, file.path(temp_out_dir, "steep.gpkg"), append = FALSE)
    }
-   
+ 
+}
+
+
+ # comine uninhabited areas for moose
+
+unhab <- st_intersection(rockice, high_elev_sf, steep_sf, largelakes)
+
+unhab <- unhab %>% st_union()
+
      
-  # 
+
+# merge uninhabitable area 
+
+
+uninhab <- foreach(x = blockno[51:60]) %dopar% {
+  
+  x = blockno[125]
+  
+  tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
+  temp_out_dir <- file.path(out_dir, x)
+  
+  uninhab_sf <- c("high_elevation.gpkg","rockice.gpkg", 
+                  "steep.gpkg","largelakes.gpkg") 
+                  
+  
+  if(uninhab_sf %in% list.files(temp_out_dir)){
+    print("contains uninhabitable areas")
+    
+    unh <-  st_sf(st_sfc(), crs = 3005)
+   
+      
+    if(file.exists(file.path(temp_out_dir,"high_elevation.gpkg"))){
+    high_elev <- st_read(file.path(temp_out_dir,"high_elevation.gpkg"))
+            unh <- st_union( high_elev_sf, unh)
+      
+    }
+       
+    if(file.exists(file.path(temp_out_dir,"rockice.gpkg"))){
+    
+      rock_ice<- st_read(file.path(temp_out_dir,"rockice.gpkg"))
+      
+      unh <- st_union( rockice, unh)
+    }
+    
+     
+    if(file.exists(file.path(temp_out_dir,"steep.gpkg"))){
+      
+      steep<- st_read(file.path(temp_out_dir,"steep.gpkg"))
+      
+      unh <- st_union(steep, unh)
+    }
+      
+    
+     if(file.exists(file.path(temp_out_dir,"largelakes.gpkg"))){
+      
+      largelakes<- st_read(file.path(temp_out_dir,"largelakes.gpkg"))
+      
+      unh <- st_union(largelakes, unh)
+   
+       }
+ 
+     # crop to the study area 
+      unhab_all = st_intersection(unh,  tmp_aoi)
+      st_write(unhab_all, file.path(temp_out_dir, "uninhabitable.gpkg"),          append = FALSE)
+
+    
+    
+     }
+   
+  
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    }
+       
+  }
+  
   # # combine uninhabited areas for moose
   # 
   #  merge_uninhabitable
@@ -186,16 +269,9 @@ uninhab <- foreach(x = blockno[11:50]) %do% {
   #  st_write(unhab, file.path(temp_out_dir, "uninhabitable.gpkg"), append = FALSE)
   
    
- 
-}
 
 
- 
- # comine uninhabited areas for moose
 
-unhab <- st_intersection(rockice, high_elev_sf, steep_sf, largelakes)
-
-unhab <- unhab %>% st_union()
 
 
 ```
