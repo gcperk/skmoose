@@ -6,14 +6,18 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-SKmoose package which provides a series of steps to estimate moose
-habitat quality within given survey blocks. This package was written for
-the Skeena Regional Moose survey group under Ministry of Water, Lands &
-Resources Stewardship.
+SKmoose is used to assess moose habitat quality within given survey
+blocks under aseries of criteria. This package provides a number of
+functions to extract data, estimate habitat and inhabitable areas within
+each block and report the values in a table.
 
 Where possible, data used in the process is extracted directly from the
-BC data catalogue, using bcdata and bcmaps R packages. These ensure up
-to date information.
+BC data catalogue, using [bcdata](https://github.com/bcgov/bcdata) and
+[bcmaps](https://github.com/bcgov/bcmaps) R packages to ensure up to
+date information is used.
+
+This package was written for Skeena Region under the Ministry of Water,
+Lands & Resources Stewardship.
 
 Optional additional data can be extracted including confidential survey
 telemetry data, however this is dependant on outside sources.
@@ -21,7 +25,7 @@ telemetry data, however this is dependant on outside sources.
 Two vignettes are provided as a guide for users. These include a
 detailed version which steps through each part of the process and an
 abreviated version. A test dataset is provided within the package to
-assist with understsnding the process.
+assist with understanding the process.
 
 ## Installation
 
@@ -35,25 +39,55 @@ devtools::install_github("gcperk/skmoose")
 
 ## Overview
 
-Moose Habitat is estimated for each survey block based on a series of
-criteria to identify possible moose habitat and remove uninhabitable
-areas. The spatial data is assembled per survey block rather than the
-entire extent of the given study area to improve efficient of
-processing. Appendinces A provides a full list of references and spatial
-querys for each criteria.
+Potential Moose habitat is estimated for each survey block based on a
+series of criteria with spatial data extracted from the bcdata
+catalogue. Uninhabitable areas are also estimated using a set of
+criteria. All spatial data is extracted on a per block area rather than
+an entire study area to improve efficiency of processing. Appendix A
+provides a full list of references and spatial queries. Once potenital
+habitat and inhabitable areas are compiled, total area of each are
+calculated to provide a means of stratifying moose survey blocks into
+catergories of Low, Medium and High. A table of all calculations is
+output for the user to review.
 
-# Estimate Uninhabiable Moose areas
+# Estimate Moose habiat
+
+The following criteria are used to estimate area of moose habitat. Once
+compiled these areas are dissolved into a single polygon. Uninhabitable
+areas, as calculated below are then removed before final area
+calculations are completed. Values shown below in **bold** are the
+default values, which can be adjusted using parameters within the
+functions.
+
+- Deciduous tree species within the VRI (vegetation resource inventory).
+  The default species include AC (Poplar), AT (Trembling Aspen), EP
+  (Paper Birch), SB (Black Spruce), ie (**c(“AT”, “AC”,“EP”,“SB”)**).
+
+- Early seral/shrub dynamic habitats. This includes: 1) fires and 2)
+  cutblocks with a minimum time of **5 yrs** since disturbance and
+  maximum time of **40 yrs** since disturbance. These ages can be
+  adjusted seperately for each disturbance type.
+
+- Proximity to streams, streams with orders of 3 to 8 are buffered by
+  150m, and streams with order of 9 are buffered to 500m
+
+- Small lakes and wetlands which are less than 1 km2.
+
+- Skeena Wildlife Ecological Resource Model- Winter forage output -
+  still to be added.
+
+# Estimate Uninhabitable areas for moose
 
 Uninhabitable areas within the landscape are defined under the following
 criteria
 
-- Waterbodies \> 1km2
+- Large waterbodies greater than 1km2
 
-- Elevation \> 1500 m
+- High elevation areas. The default cutoff is currently set to areas
+  above **1500 m**
 
-- Slope \> 55 degrees
-
-# Estimate Moose Habitat
+- Steep slopes. The default is currently set to greater than **55
+  degrees**.
 
 # Calculate areas
 
