@@ -66,8 +66,7 @@ get_basedata <- function(in_aoi, out_path){
       lakes <- bcdata::bcdc_query_geodata("cb1e3aba-d3fe-4de1-a2d4-b8b6650fb1f6") %>%
         bcdata::filter(bcdata::INTERSECTS(in_aoi)) %>%
         bcdata::collect() %>%
-        dplyr::select("id", "WATERBODY_TYPE", "AREA_HA") %>%
-        dplyr::filter("AREA_HA" > 100)
+        dplyr::select("id", "WATERBODY_TYPE", "AREA_HA")
 
       if(length(st_is_empty(lakes)) > 0 ){
       sf::st_write(lakes, file.path(out_path, "lakes.gpkg"), append = FALSE)

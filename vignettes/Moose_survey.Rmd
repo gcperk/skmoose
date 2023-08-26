@@ -35,7 +35,7 @@ Read in the survey blocks file. We will use a test subset provided with the pack
 
 data_location <- fs::path_package("extdata", package = "skmoose")
 data_file <- skmoose::skmoose_example()
-bks_name <- file.path(data_location, data_file)
+#bks_name <- file.path(data_location, data_file)
 
 
 # or the full data set: 
@@ -80,9 +80,9 @@ sf::st_write(aoi, file.path(out_dir, "aoi.gpkg"), append = FALSE)
 library(foreach)
 registerDoSEQ()
 
-basedata <- foreach(x = blockno[1:60]) %dopar% {
+basedata <- foreach(x = blockno[1:10]) %dopar% {
   
-  x = blockno[197]
+  #x = blockno[197]
   
   tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
   temp_out_dir <- file.path(out_dir, x)
@@ -176,7 +176,7 @@ uninhab <- foreach(x = blockno[1:8]) %dopar% {
 
 uninhab <- foreach(x = blockno[1:8]) %dopar% {
   
-  #x = blockno[52]
+  x = blockno[197]
   
   tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
   temp_out_dir <- file.path(out_dir, x)
@@ -208,7 +208,7 @@ o	Skeena Wildlife Ecological Resource Model- Winter forage output
 
 habitable <- foreach(x = blockno[1:8]) %do% {
   
-    #x = blockno[52]
+    x = blockno[10]
     print(x)
   
     tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
@@ -281,22 +281,26 @@ habitable <- foreach(x = blockno[1:8]) %do% {
    }
  
      
-  # wetlands 
+    # wetlands already filtered to < 100 Ha Area
     
-   if("wetlands.gpkg"  %in% list.files(temp_out_dir)){
+    
+   if("lakes.gpkg" %in% list.files(temp_out_dir)){
       
-      print("contains wetlands")
+      print("contains lakes")
      
-   wetlands <- st_read(file.path(temp_out_dir, "wetlands.gpkg")) 
-      dplyr::filter(AREA_HA <= 100) %>%
-      sf::st_union()
+  smalllakes <- st_read(file.path(temp_out_dir, "lakes.gpkg"))%>%
+     dplyr::filter(AREA_HA < 100) %>%
+     st_union()
+    
 
-       if(length(st_is_empty(wetlands)) > 0 ){
-   st_write(wetlands, file.path(temp_out_path, "wetland_filter.gpkg"), append = FALSE)
-    }
-
+   if(length(st_is_empty(smalllakes)) > 0 ){
+  st_write(smalllakes, file.path(temp_out_dir, "smalllakes.gpkg"), append = FALSE)
+      }
    }
-  
+    
+    
+    
+    
   #Skeena Wildlife Ecological Resource Model- Winter forage output 
   
   
@@ -314,7 +318,7 @@ habitable <- foreach(x = blockno[1:8]) %do% {
 
 habitable <- foreach(x = blockno[c(1:3)]) %dopar% {
   
-  #x = blockno[52]
+ # x = blockno[197]
   
   tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
   temp_out_dir <- file.path(out_dir, x)
@@ -344,7 +348,7 @@ Calculate the areas for habitat and non-habitable in each block and output a tab
 
 area_tab <- foreach(x = blockno[1:3], .combine=rbind) %dopar% {
   
-  #x = blockno[1]
+  #x = blockno[197]
   tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
   temp_out_dir <- file.path(out_dir, x)
   

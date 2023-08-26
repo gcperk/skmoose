@@ -19,7 +19,8 @@ merge_habit <- function(tmp_aoi, temp_out_dir) {
                   "fires_filtered.gpkg",
                   "streams3_8.gpkg",
                   "streams9.gpkg",
-                  "wetland_filter.gpkg")
+                  "wetland.gpkg",
+                  "smalllakes.gpkg")
 
 
   if(any(hab_sf %in% list.files(temp_out_dir))){
@@ -65,8 +66,8 @@ merge_habit <- function(tmp_aoi, temp_out_dir) {
 
 
     # check wetlands
-    if(file.exists(file.path(temp_out_dir,"wetland_filter.gpkg"))){
-      wet<- sf::st_read(file.path(temp_out_dir,"wetland_filter.gpkg"))
+    if(file.exists(file.path(temp_out_dir,"wetland.gpkg"))){
+      wet<- sf::st_read(file.path(temp_out_dir,"wetland.gpkg"))
       hab  <- sf::st_union(wet, hab)
       hab <- sf::st_union(hab)
     }
