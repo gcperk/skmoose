@@ -1,9 +1,11 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# skmoose
+# Skeena Moose Survey Stratification
 
 <!-- badges: start -->
+
+[![Lifecycle:Experimental](https://img.shields.io/badge/Lifecycle-Experimental-339999)](Redirect-URL)
 <!-- badges: end -->
 
 SKmoose is used to assess moose habitat quality within given survey
@@ -76,10 +78,12 @@ functions.
 - Skeena Wildlife Ecological Resource Model- Winter forage output -
   still to be added.
 
-# Estimate Uninhabitable areas for moose
+# Estimate Uninhabitable areas
 
 Uninhabitable areas within the landscape are defined under the following
 criteria
+
+- Rock and Ice
 
 - Large waterbodies greater than 1km2
 
@@ -89,31 +93,69 @@ criteria
 - Steep slopes. The default is currently set to greater than **55
   degrees**.
 
-# Calculate areas
+# Calculate proportion of Moose habitat
 
-# output table for analysis
+Once the area of moose habitat and uninhabitable areas has been
+calculated, we then estimate the area and combine these into a single
+table.
 
-A detailed table of criteria is provided below.
+The table contains the following fields: - bk = block id number -
+total_area_m2 = total area of block in m2 - uninh_area_m2 = total
+uninhabitable area of the block (m2) - hab_area_m2 = total habitable
+area within each block (m2) - prop_uninh_block = proportion of
+uninhabitable area of each block. (uninh_area_m2/total_area_m2) -
+net_habitat_area_m2 = Net area of habitat available within each block
+(m2) (total_area_m2 - uninh_area_m2) - prop_habit_block_m2 = Proportion
+of habitat within the total area of the block (m2)
+(hab_area_m2/total_area_m2) - prop_habit_net_habit_m2 = proportion of
+habitat within the net area of the block
+(hab_area_m2/net_habitat_area_m2)
 
-This is a basic example which shows you how to solve a common problem:
+## Appendix A
+
+The following datasets are used to estimate habitat and inhabitable
+areas. These include:
+
+- [VRI](https://catalogue.data.gov.bc.ca/dataset/vri-2022-forest-vegetation-composite-polygon).
+
+Rock and Ice (uninhabitable) is filtered using the British Columbia Land
+Cover Classification Scheme Level 3 where values are classed as alpine.
+(BCLCS_LEVEL_3 = “A”)
+
+Deciduous tree species (habitat) are filtered using the following
+fields: “SPECIES_CD_1”,
+“SPECIES_CD_2”,“SPECIES_CD_3”,“SPECIES_CD_4”,“SPECIES_CD_5”,“SPECIES_CD_6”.
+The default species of interest include (**c(“AT”, “AC”,“EP”,“SB”)**).
+
+- [Lakes](https://catalogue.data.gov.bc.ca/dataset/freshwater-atlas-lakes)
+  are filtered by area (AREA_HA) is greater than 1km2 (uninhabitable
+  areas) and also \< 1km2 for habitable area.
+
+- [wetlands](https://catalogue.data.gov.bc.ca/dataset/freshwater-atlas-wetlands)
+  or \< 1kms are used in habitat.
+
+- [stream
+  network](https://catalogue.data.gov.bc.ca/dataset/92344413-8035-4c08-b996-65a9b3f62fca)
+  is used to determine and buffer based on stream order.
+
+- [fires
+  historic](https://catalogue.data.gov.bc.ca/dataset/22c7cb44-1463-48f7-8e47-88857f207702)
+  and \[fires current\]
+  (<https://catalogue.data.gov.bc.ca/dataset/cdfc2d7b-c046-4bf0-90ac-4897232619e1>)
+  are used to estimate fires. Time since burn is used to filter the
+  miniumum and maximum range to include for moose habitat.
+
+- [cutblocks](https://catalogue.data.gov.bc.ca/dataset/b1b647a6-f271-42e0-9cd0-89ec24bce9f7)
+  are filterd usein minimum and maximum time since harvest.
+
+- [digital elevation model
+  (dem)](https://rdrr.io/github/bcgov/bcmaps/man/cded.html) is used to
+  estimate elevation and slope. This is extracted from the bcmaps
+  packages and uses TRIM DEM.
 
 ``` r
 library(skmoose)
 ## basic example code
-```
-
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
-
-``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
 ```
 
 You’ll still need to render `README.Rmd` regularly, to keep `README.md`
