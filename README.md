@@ -6,18 +6,22 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-Skmoose package is a series of steps to estimate moose quality within
-survey blocks. This package was written for the Skeena regional Moose
-survey group under Ministry of Water, Lands, Resources and XXXXXX.
+SKmoose package which provides a series of steps to estimate moose
+habitat quality within given survey blocks. This package was written for
+the Skeena Regional Moose survey group under Ministry of Water, Lands &
+Resources Stewardship.
 
-Where possible all data used in the process is extracted from the BC
-data catalogue, using the bcdata and bcmaps packages. These ensure up to
-date information. Optional additional data can be extracted including
-confidential survey telemetry data, however this is dependant on outside
-sources.
+Where possible, data used in the process is extracted directly from the
+BC data catalogue, using bcdata and bcmaps R packages. These ensure up
+to date information.
 
-A detailed step vignette is provides to step through the process using a
-test dataset provided as part of the package.
+Optional additional data can be extracted including confidential survey
+telemetry data, however this is dependant on outside sources.
+
+Two vignettes are provided as a guide for users. These include a
+detailed version which steps through each part of the process and an
+abreviated version. A test dataset is provided within the package to
+assist with understsnding the process.
 
 ## Installation
 
@@ -29,7 +33,33 @@ You can install the development version of skmoose from
 devtools::install_github("gcperk/skmoose")
 ```
 
-## Example
+## Overview
+
+Moose Habitat is estimated for each survey block based on a series of
+criteria to identify possible moose habitat and remove uninhabitable
+areas. The spatial data is assembled per survey block rather than the
+entire extent of the given study area to improve efficient of
+processing. Appendinces A provides a full list of references and spatial
+querys for each criteria.
+
+# Estimate Uninhabiable Moose areas
+
+Uninhabitable areas within the landscape are defined under the following
+criteria
+
+- Waterbodies \> 1km2
+
+- Elevation \> 1500 m
+
+- Slope \> 55 degrees
+
+# Estimate Moose Habitat
+
+# Calculate areas
+
+# output table for analysis
+
+A detailed table of criteria is provided below.
 
 This is a basic example which shows you how to solve a common problem:
 
