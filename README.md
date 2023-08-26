@@ -117,15 +117,15 @@ The following datasets are used to estimate habitat and inhabitable
 areas. These include:
 
 - [VRI](https://catalogue.data.gov.bc.ca/dataset/vri-2022-forest-vegetation-composite-polygon).
+  Vegetation Resource Inventory: Rock and Ice (uninhabitable) is
+  filtered using the British Columbia Land Cover Classification Scheme
+  Level 3 where values are classed as alpine. (BCLCS_LEVEL_3 = “A”)
 
-Rock and Ice (uninhabitable) is filtered using the British Columbia Land
-Cover Classification Scheme Level 3 where values are classed as alpine.
-(BCLCS_LEVEL_3 = “A”)
-
-Deciduous tree species (habitat) are filtered using the following
-fields: “SPECIES_CD_1”,
-“SPECIES_CD_2”,“SPECIES_CD_3”,“SPECIES_CD_4”,“SPECIES_CD_5”,“SPECIES_CD_6”.
-The default species of interest include (**c(“AT”, “AC”,“EP”,“SB”)**).
+- [VRI](https://catalogue.data.gov.bc.ca/dataset/vri-2022-forest-vegetation-composite-polygon).
+  Vegetation Resource Inventory: Deciduous tree species (habitat) are
+  filtered using the following fields: “SPECIES_CD_1”,
+  “SPECIES_CD_2”,“SPECIES_CD_3”,“SPECIES_CD_4”,“SPECIES_CD_5”,“SPECIES_CD_6”.
+  The default species of interest include (**c(“AT”, “AC”,“EP”,“SB”)**).
 
 - [Lakes](https://catalogue.data.gov.bc.ca/dataset/freshwater-atlas-lakes)
   are filtered by area (AREA_HA) is greater than 1km2 (uninhabitable
@@ -140,8 +140,8 @@ The default species of interest include (**c(“AT”, “AC”,“EP”,“SB�
 
 - [fires
   historic](https://catalogue.data.gov.bc.ca/dataset/22c7cb44-1463-48f7-8e47-88857f207702)
-  and \[fires current\]
-  (<https://catalogue.data.gov.bc.ca/dataset/cdfc2d7b-c046-4bf0-90ac-4897232619e1>)
+  and [fires
+  current](https://catalogue.data.gov.bc.ca/dataset/cdfc2d7b-c046-4bf0-90ac-4897232619e1)
   are used to estimate fires. Time since burn is used to filter the
   miniumum and maximum range to include for moose habitat.
 
@@ -152,14 +152,3 @@ The default species of interest include (**c(“AT”, “AC”,“EP”,“SB�
   (dem)](https://rdrr.io/github/bcgov/bcmaps/man/cded.html) is used to
   estimate elevation and slope. This is extracted from the bcmaps
   packages and uses TRIM DEM.
-
-``` r
-library(skmoose)
-## basic example code
-```
-
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this. You could also
-use GitHub Actions to re-render `README.Rmd` every time you push. An
-example workflow can be found here:
-<https://github.com/r-lib/actions/tree/v1/examples>.
