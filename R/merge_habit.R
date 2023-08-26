@@ -17,7 +17,7 @@ merge_habit <- function(tmp_aoi, temp_out_dir) {
   hab_sf <- c("vri_decid.gpkg",
                   "cutblocks_filtered.gpkg",
                   "fires_filtered.gpkg",
-                  "streams38.gpkg",
+                  "streams3_8.gpkg",
                   "streams9.gpkg",
                   "wetland_filter.gpkg")
 
@@ -50,8 +50,8 @@ merge_habit <- function(tmp_aoi, temp_out_dir) {
     }
 
     # check streams 3 - 8
-    if(file.exists(file.path(temp_out_dir,"streams38.gpkg"))){
-      st38<- sf::st_read(file.path(temp_out_dir,"streams38.gpkg"))
+    if(file.exists(file.path(temp_out_dir,"streams3_8.gpkg"))){
+      st38<- sf::st_read(file.path(temp_out_dir,"streams3_8.gpkg"))
       hab  <- sf::st_union(st38, hab)
       hab <- sf::st_union(hab)
     }

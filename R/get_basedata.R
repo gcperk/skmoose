@@ -69,7 +69,7 @@ get_basedata <- function(in_aoi, out_path){
         dplyr::select("id", "WATERBODY_TYPE", "AREA_HA") %>%
         dplyr::filter("AREA_HA" > 100)
 
-      if(length(nrow(lakes)) > 0 ){
+      if(length(st_is_empty(lakes)) > 0 ){
       sf::st_write(lakes, file.path(out_path, "lakes.gpkg"), append = FALSE)
       }
 
@@ -80,10 +80,10 @@ get_basedata <- function(in_aoi, out_path){
         bcdata::collect() %>%
         dplyr::select("id", "WATERBODY_TYPE", "AREA_HA")
 
-      wetlands <- wetlands %>% dplyr::filter("AREA_HA" <= 100) %>%
+      wetlands <- wetlands %>% dplyr::filter(AREA_HA < 100) %>%
         sf::st_union()
 
-      if(length(nrow(wetlands)) > 0 ){
+      if(length(st_is_empty(wetlands) > 0)){
         sf::st_write(wetlands, file.path(out_path, "wetlands.gpkg"), append = FALSE)
       }
 
@@ -102,7 +102,7 @@ get_basedata <- function(in_aoi, out_path){
     dplyr::select(c("id", "STREAM_ORDER"))%>%
     sf::st_zm()
 
-  if(length(nrow(streams)) > 0 ){
+  if(length(st_is_empty(streams)) > 0 ){
    sf::st_write(streams, file.path(out_path, "streams.gpkg"), append = FALSE)
   }
 
