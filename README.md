@@ -52,7 +52,7 @@ calculated to provide a means of stratifying moose survey blocks into
 catergories of Low, Medium and High. A table of all calculations is
 output for the user to review.
 
-# Estimate Moose habiat
+## Criteria for potential Moose habiat
 
 The following criteria are used to estimate area of moose habitat. Once
 compiled these areas are dissolved into a single polygon. Uninhabitable
@@ -70,15 +70,15 @@ functions.
   maximum time of **40 yrs** since disturbance. These ages can be
   adjusted seperately for each disturbance type.
 
-- Proximity to streams, streams with orders of 3 to 8 are buffered by
-  150m, and streams with order of 9 are buffered to 500m
+- Proximity to streams, streams with orders of **3 to 8** are buffered
+  by **150m**, and streams with order of **9** are buffered to **500m**.
 
 - Small lakes and wetlands which are less than 1 km2.
 
 - Skeena Wildlife Ecological Resource Model- Winter forage output -
   still to be added.
 
-# Estimate Uninhabitable areas
+## Criteria for uninhabitable areas
 
 Uninhabitable areas within the landscape are defined under the following
 criteria
@@ -93,25 +93,35 @@ criteria
 - Steep slopes. The default is currently set to greater than **55
   degrees**.
 
-# Calculate proportion of Moose habitat
+## Calculate proportion of Moose habitat
 
 Once the area of moose habitat and uninhabitable areas has been
 calculated, we then estimate the area and combine these into a single
 table.
 
-The table contains the following fields: - bk = block id number -
-total_area_m2 = total area of block in m2 - uninh_area_m2 = total
-uninhabitable area of the block (m2) - hab_area_m2 = total habitable
-area within each block (m2) - prop_uninh_block = proportion of
-uninhabitable area of each block. (uninh_area_m2/total_area_m2) -
-net_habitat_area_m2 = Net area of habitat available within each block
-(m2) (total_area_m2 - uninh_area_m2) - prop_habit_block_m2 = Proportion
-of habitat within the total area of the block (m2)
-(hab_area_m2/total_area_m2) - prop_habit_net_habit_m2 = proportion of
-habitat within the net area of the block
-(hab_area_m2/net_habitat_area_m2)
+The table contains the following fields:
 
-## Appendix A
+- bk = block id number
+
+- total_area_m2 = total area of block in m2
+
+- uninh_area_m2 = total uninhabitable area of the block (m2)
+
+- hab_area_m2 = total habitable area within each block (m2)
+
+- prop_uninh_block = proportion of uninhabitable area of each block.
+  (uninh_area_m2/total_area_m2)
+
+- net_habitat_area_m2 = Net area of habitat available within each block
+  (m2) (total_area_m2 - uninh_area_m2)
+
+- prop_habit_block_m2 = Proportion of habitat within the total area of
+  the block (m2) (hab_area_m2/total_area_m2)
+
+- prop_habit_net_habit_m2 = proportion of habitat within the net area of
+  the block (hab_area_m2/net_habitat_area_m2)
+
+### Appendix A
 
 The following datasets are used to estimate habitat and inhabitable
 areas. These include:
@@ -132,7 +142,8 @@ areas. These include:
   areas) and also \< 1km2 for habitable area.
 
 - [wetlands](https://catalogue.data.gov.bc.ca/dataset/freshwater-atlas-wetlands)
-  or \< 1kms are used in habitat.
+  of area \< 1kms are combined with small lakes as potential moose
+  habitat.
 
 - [stream
   network](https://catalogue.data.gov.bc.ca/dataset/92344413-8035-4c08-b996-65a9b3f62fca)
