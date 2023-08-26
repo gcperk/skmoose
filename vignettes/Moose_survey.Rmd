@@ -35,12 +35,12 @@ Read in the survey blocks file. We will use a test subset provided with the pack
 
 data_location <- fs::path_package("extdata", package = "skmoose")
 data_file <- skmoose::skmoose_example()
-#bks_name <- file.path(data_location, data_file)
+bks_name <- file.path(data_location, data_file)
 
 
 # or the full data set: 
 
-bks_name <- file.path("C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_block_surveyR\\02.Data", "Tweedsmuir-SRBblocks.gpkg")
+#bks_name <- file.path("C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_block_surveyR\\02.Data", "Tweedsmuir-SRBblocks.gpkg")
 
 # read in and format the data 
 aoi <- sf::st_read(file.path(bks_name))
@@ -82,7 +82,7 @@ registerDoSEQ()
 
 basedata <- foreach(x = blockno[1:60]) %dopar% {
   
-  x = blockno[106]
+ # x = blockno[106]
   
   tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
   temp_out_dir <- file.path(out_dir, x)
@@ -116,9 +116,9 @@ This includes :
 
 
 ```{r}
-uninhab <- foreach(x = blockno[51:60]) %dopar% {
+uninhab <- foreach(x = blockno[1:8]) %dopar% {
   
-  x = blockno[106]
+  #x = blockno[106]
   
   tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
   temp_out_dir <- file.path(out_dir, x)
@@ -174,9 +174,9 @@ uninhab <- foreach(x = blockno[51:60]) %dopar% {
 ```{r}
 # merge uninhabitable area 
 
-uninhab <- foreach(x = blockno[51:60]) %dopar% {
+uninhab <- foreach(x = blockno[1:8]) %dopar% {
   
-  x = blockno[52]
+  #x = blockno[52]
   
   tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
   temp_out_dir <- file.path(out_dir, x)
@@ -206,9 +206,9 @@ o	Skeena Wildlife Ecological Resource Model- Winter forage output
 
 ```{r}
 
-uninhab <- foreach(x = blockno[1:5]) %do% {
+habitable <- foreach(x = blockno[1:8]) %do% {
   
-    x = blockno[52]
+    #x = blockno[52]
     print(x)
   
     tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
@@ -260,7 +260,7 @@ uninhab <- foreach(x = blockno[1:5]) %do% {
 # Buffered 3-8 order streams from FWA stream dataset by 150m (dissolved) 
 #- 9th order streams buffered by 500 meters. 
   
-   if("stream.gpkg"  %in% list.files(temp_out_dir)){
+   if("streams.gpkg"  %in% list.files(temp_out_dir)){
       
       print("contains streams")
 
@@ -270,11 +270,11 @@ uninhab <- foreach(x = blockno[1:5]) %do% {
   
     
     if(length(st_is_empty(stream38 )) > 0 ){
-   st_write(stream38 , file.path(temp_out_path, "streams3_8.gpkg"), append = FALSE)
+   st_write(stream38 , file.path(temp_out_dir, "streams3_8.gpkg"), append = FALSE)
 }
 
     if(length(st_is_empty(stream9 )) > 0 ){
-   st_write(stream9 , file.path(temp_out_path, "streams9.gpkg"), append = FALSE)
+   st_write(stream9 , file.path(temp_out_dir, "streams9.gpkg"), append = FALSE)
 }
     
     
@@ -312,15 +312,82 @@ uninhab <- foreach(x = blockno[1:5]) %do% {
 ```{r}
 # merge uninhabitable area 
 
-uninhab <- foreach(x = blockno[51:60]) %dopar% {
+habitable <- foreach(x = blockno[c(1:3)]) %dopar% {
   
-  x = blockno[52]
+  #x = blockno[52]
   
   tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
   temp_out_dir <- file.path(out_dir, x)
   
   merge_habit(tmp_aoi, temp_out_dir)
     
+  # remove an uninhabitable areas from within habitable 
+  
+  if(file.exists(file.path(temp_out_dir,"uninhabitable.gpkg"))){
+ 
+     uninh <- st_read(file.path(temp_out_dir, "uninhabitable.gpkg"))
+     hab <- st_read(file.path(temp_out_dir, "habitable.gpkg"))
+  
+      habit <- st_intersection(uninh,  hab)
+    final_hab <- st_difference(hab, uninh)
+    st_write(final_hab, file.path(temp_out_dir, "habitable.gpkg"), append = FALSE)
+  
+    }
+  
      }
    
 ```
+Calculate the areas for habitat and non-habitable in each block and output a table 
+
+
+```{r}
+
+#out <- data.frame()
+#names(out) <- c("bk", "total_area_m2", "uninh_area_m2", "hab_area_m2")
+
+area_tab <- foreach(x = blockno[1:3], .combine=rbind) %dopar% {
+  
+  #x = blockno[1]
+  
+  tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
+  temp_out_dir <- file.path(out_dir, x)
+  
+  block_area <- st_area(tmp_aoi)
+
+  if(file.exists(file.path(temp_out_dir,"uninhabitable.gpkg"))){
+ 
+     uninh <- st_read(file.path(temp_out_dir, "uninhabitable.gpkg"))
+     
+     uninh_area <- st_area(uninh)
+     
+  } else {
+    
+     uninh_area <- 0
+     
+  }
+     
+  
+  if(file.exists(file.path(temp_out_dir,"habitable.gpkg"))){
+ 
+     hab <- st_read(file.path(temp_out_dir, "habitable.gpkg"))
+     
+     hab_area <- st_area(hab)
+     
+  } else {
+    
+     hab_area <- 0
+     
+  }
+  
+  tline <- c(x, block_area, uninh_area, hab_area)
+  tline
+}
+
+  area_tab <- as.data.frame(area_tab, row.names = FALSE)
+  names(area_tab) <- c("bk", "total_area_m2", "uninh_area_m2", "hab_area_m2")
+
+  area_tab
+  
+
+```
+
