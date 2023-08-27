@@ -25,35 +25,35 @@ merge_nonhabit <- function(tmp_aoi, temp_out_dir) {
 
 
     if(file.exists(file.path(temp_out_dir,"high_elevation.gpkg"))){
-      high_elev <- sf::st_read(file.path(temp_out_dir,"high_elevation.gpkg"))
+      high_elev <- sf::st_read(file.path(temp_out_dir,"high_elevation.gpkg"), quiet = TRUE)
       unh <- rbind(high_elev, unh)
       unh <- sf::st_union(unh)
 
     }
 
     if(file.exists(file.path(temp_out_dir,"rockice.gpkg"))){
-      rockice<- sf::st_read(file.path(temp_out_dir,"rockice.gpkg"))
+      rockice<- sf::st_read(file.path(temp_out_dir,"rockice.gpkg"),quiet = TRUE)
       unh <- rbind(rockice, unh)
       unh <- sf::st_union(unh)
     }
 
 
     if(file.exists(file.path(temp_out_dir,"steep.gpkg"))){
-      steep<- sf::st_read(file.path(temp_out_dir,"steep.gpkg"))
+      steep<- sf::st_read(file.path(temp_out_dir,"steep.gpkg"), quiet = TRUE)
       unh <- rbind(steep, unh)
       unh <- sf::st_union(steep, unh)
     }
 
 
     if(file.exists(file.path(temp_out_dir,"largelakes.gpkg"))){
-      largelakes<- sf::st_read(file.path(temp_out_dir,"largelakes.gpkg"))
+      largelakes<- sf::st_read(file.path(temp_out_dir,"largelakes.gpkg"),quiet = TRUE)
       unh <- rbind(largelakes, unh)
       unh <- sf::st_union(largelakes, unh)
     }
 
     # crop to the study area
     unhab_all = sf::st_intersection(unh, tmp_aoi)
-    st_write(unhab_all, file.path(temp_out_dir, "uninhabitable.gpkg"),          append = FALSE)
+    st_write(unhab_all, file.path(temp_out_dir, "uninhabitable.gpkg"), append = FALSE, quiet = TRUE)
 
     #return(unhab_all)
 

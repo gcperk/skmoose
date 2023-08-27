@@ -31,35 +31,35 @@ merge_habit <- function(tmp_aoi, temp_out_dir) {
 
     # check deciduous
     if(file.exists(file.path(temp_out_dir,"vri_decid.gpkg"))){
-      decid <- sf::st_read(file.path(temp_out_dir,"vri_decid.gpkg"))
+      decid <- sf::st_read(file.path(temp_out_dir,"vri_decid.gpkg"), quiet = TRUE)
       hab<- rbind(decid, hab)
       hab <- sf::st_union(hab)
     }
 
     # check recent cutblocks
     if(file.exists(file.path(temp_out_dir,"cutblocks_filtered.gpkg"))){
-      harvest<- sf::st_read(file.path(temp_out_dir,"cutblocks_filtered.gpkg"))
+      harvest<- sf::st_read(file.path(temp_out_dir,"cutblocks_filtered.gpkg"),quiet = TRUE)
       hab <- sf::st_union(harvest,hab)
       hab <- sf::st_union(hab)
     }
 
     # check fires
     if(file.exists(file.path(temp_out_dir,"fires_filtered.gpkg"))){
-      fires <- sf::st_read(file.path(temp_out_dir,"fires_filtered.gpkg"))
+      fires <- sf::st_read(file.path(temp_out_dir,"fires_filtered.gpkg"),quiet = TRUE)
       hab <- sf::st_union(fires, hab)
       hab <- sf::st_union(hab)
     }
 
     # check streams 3 - 8
     if(file.exists(file.path(temp_out_dir,"streams3_8.gpkg"))){
-      st38<- sf::st_read(file.path(temp_out_dir,"streams3_8.gpkg"))
+      st38<- sf::st_read(file.path(temp_out_dir,"streams3_8.gpkg"),quiet = TRUE)
       hab  <- sf::st_union(st38, hab)
       hab <- sf::st_union(hab)
     }
 
     # check streams 9
     if(file.exists(file.path(temp_out_dir,"streams9.gpkg"))){
-      st9 <- sf::st_read(file.path(temp_out_dir,"streams9.gpkg"))
+      st9 <- sf::st_read(file.path(temp_out_dir,"streams9.gpkg"),quiet = TRUE)
       hab  <- sf::st_union(st9, hab)
       hab <- sf::st_union(hab)
     }
@@ -67,7 +67,7 @@ merge_habit <- function(tmp_aoi, temp_out_dir) {
 
     # check wetlands
     if(file.exists(file.path(temp_out_dir,"wetland.gpkg"))){
-      wet<- sf::st_read(file.path(temp_out_dir,"wetland.gpkg"))
+      wet<- sf::st_read(file.path(temp_out_dir,"wetland.gpkg"),quiet = TRUE)
       hab  <- sf::st_union(wet, hab)
       hab <- sf::st_union(hab)
     }
@@ -75,7 +75,7 @@ merge_habit <- function(tmp_aoi, temp_out_dir) {
 
     # crop to the study area
     hab_all = sf::st_intersection(hab, tmp_aoi)
-    st_write(hab_all, file.path(temp_out_dir, "habitable.gpkg"),
+    st_write(hab_all, file.path(temp_out_dir, "habitable.gpkg"),quiet = TRUE,
              append = FALSE)
 
     #return(unhab_all)
