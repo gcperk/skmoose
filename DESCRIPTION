@@ -12,7 +12,8 @@ Description: Extract all required base data to assess moose inaccessible areas  
 License: Apache License (>= 2)
 Encoding: UTF-8
 LazyData: true
-URL: https://github.com/gcperk/skmoose
+URL: https://github.com/gcperk/skmoose,
+    https://gcperk.github.io/skmoose/
 BugReports: https://github.com/gcperk/skmoose/issues
 Imports: 
     bcdata,

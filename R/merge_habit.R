@@ -32,35 +32,55 @@ merge_habit <- function(tmp_aoi, temp_out_dir) {
     # check deciduous
     if(file.exists(file.path(temp_out_dir,"vri_decid.gpkg"))){
       decid <- sf::st_read(file.path(temp_out_dir,"vri_decid.gpkg"), quiet = TRUE)
-      hab<- rbind(decid, hab)
+      hab <- rbind(decid, hab)
       hab <- sf::st_union(hab)
     }
 
     # check recent cutblocks
     if(file.exists(file.path(temp_out_dir,"cutblocks_filtered.gpkg"))){
       harvest<- sf::st_read(file.path(temp_out_dir,"cutblocks_filtered.gpkg"),quiet = TRUE)
-      hab <- sf::st_union(harvest,hab)
+
+      if(length(st_geometry(hab)) == 0){
+        hab <- rbind(harvest, hab)
+      } else {
+        hab <- sf::st_union(harvest,hab)
+      }
       hab <- sf::st_union(hab)
     }
 
     # check fires
     if(file.exists(file.path(temp_out_dir,"fires_filtered.gpkg"))){
       fires <- sf::st_read(file.path(temp_out_dir,"fires_filtered.gpkg"),quiet = TRUE)
-      hab <- sf::st_union(fires, hab)
+      if(length(st_geometry(hab)) == 0){
+        hab <- rbind(fires, hab)
+      } else {
+        hab <- sf::st_union(fires,hab)
+      }
       hab <- sf::st_union(hab)
+
     }
 
     # check streams 3 - 8
     if(file.exists(file.path(temp_out_dir,"streams3_8.gpkg"))){
       st38<- sf::st_read(file.path(temp_out_dir,"streams3_8.gpkg"),quiet = TRUE)
-      hab  <- sf::st_union(st38, hab)
+
+      if(length(st_geometry(hab)) == 0){
+        hab <- rbind(st38, hab)
+      } else {
+        hab <- sf::st_union(st38,hab)
+      }
       hab <- sf::st_union(hab)
     }
 
     # check streams 9
     if(file.exists(file.path(temp_out_dir,"streams9.gpkg"))){
       st9 <- sf::st_read(file.path(temp_out_dir,"streams9.gpkg"),quiet = TRUE)
-      hab  <- sf::st_union(st9, hab)
+
+      if(length(st_geometry(hab)) == 0){
+        hab <- rbind(st9, hab)
+      } else {
+        hab <- sf::st_union(st9,hab)
+      }
       hab <- sf::st_union(hab)
     }
 
@@ -75,7 +95,12 @@ merge_habit <- function(tmp_aoi, temp_out_dir) {
     # check smalllakes
     if(file.exists(file.path(temp_out_dir,"smalllakes.gpkg"))){
       lake <- sf::st_read(file.path(temp_out_dir,"smalllakes.gpkg"),quiet = TRUE)
-      hab  <- sf::st_union(lake, hab)
+
+       if(length(st_geometry(hab)) == 0){
+        hab <- rbind(lake , hab)
+      } else {
+        hab <- sf::st_union(lake ,hab)
+      }
       hab <- sf::st_union(hab)
     }
 

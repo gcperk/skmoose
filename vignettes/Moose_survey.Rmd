@@ -38,11 +38,11 @@ Firstly we will read in the survey block layout. Ideally this geospatial file wi
 
 data_location <- fs::path_package("extdata", package = "skmoose")
 data_file <- skmoose::skmoose_example()
-bks_name <- file.path(data_location, data_file)
+#bks_name <- file.path(data_location, data_file)
 
 # Alternatively you can read in an entire dataset by pointing to the file location as shown below: 
 
-#bks_name <- file.path("C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_block_surveyR\\02.Data", "Tweedsmuir-SRBblocks.gpkg")
+bks_name <- file.path("C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_block_surveyR\\02.Data", "Tweedsmuir-SRBblocks.gpkg")
 
 ```
 
@@ -92,7 +92,7 @@ registerDoSEQ()
 
 # loop through each block and extract the basedata. These will be filtered and a copy saved under the respective file folder. 
 
-basedata <- foreach(x = blockno[1:10]) %dopar% {
+basedata <- foreach(x = blockno[11:20]) %dopar% {
   
   # test line - if you want to run a single block 
   #x = blockno[9]
@@ -133,7 +133,7 @@ eval_threshold = 1500
 slope_threshold = 55
 
 
-uninhab <- foreach(x = blockno[1:10]) %dopar% {
+uninhab <- foreach(x = blockno[11:20]) %dopar% {
   
   #x = blockno[197]
   
@@ -188,7 +188,7 @@ For each block we then combine the uninhabitable area into a single polygon and 
 ```{r}
 # merge uninhabitable area 
 
-uninhab <- foreach(x = blockno[1:10]) %dopar% {
+uninhab <- foreach(x = blockno[11:20]) %dopar% {
   
   #x = blockno[197]
   print(x)
@@ -225,7 +225,7 @@ cutblock_max_yr = 40
 fire_min_yr = 5
 fire_max_yr = 40
 
-habitable <- foreach(x = blockno[1:10]) %dopar% {
+habitable <- foreach(x = blockno[11:20]) %dopar% {
   
    # x = blockno[1]
     print(x)
@@ -323,9 +323,10 @@ For each block we then combine all the outputs into a single moose habitat layer
 ```{r}
 # merge uninhabitable area 
 
-habitable <- foreach(x = blockno[c(1:10)]) %dopar% {
+habitable <- foreach(x = blockno[c(11:20)]) %dopar% {
   
- #x = blockno[5]
+ 
+ # x = blockno[12]
   
   tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
   temp_out_dir <- file.path(out_dir, x)
@@ -357,10 +358,9 @@ For each block we will read in the habitable and inhabitable areas and calculate
 
 ```{r}
 
-out_table <- calculate_areas(blockno[1:10], aoi, out_dir)
+out_table <- calculate_areas(blockno[11:20], aoi, out_dir)
 
 write.csv(out_table, file.path(out_dir, "survey_areas.csv"))
-
 
 ```
 
