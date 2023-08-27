@@ -12,9 +12,7 @@
 #' vri_browse(vri, species_codes = c("AT", "AC","EP","SB"))
 #' }
 
-vri_browse <-
-  function(vri,
-           species_codes = c("AT", "AC", "EP", "SB")) {
+vri_browse <-function(vri, species_codes = c("AT", "AC", "EP", "SB")) {
     #vri <- st_read(file.path(out_dir, "vri.gpkg"))
     #species_codes = c("AT", "AC","EP","SB")
 
@@ -38,12 +36,7 @@ vri_browse <-
       dplyr::select(SPECIES_CD_6)
 
 
-    vri_moose <- sf::st_join(vri1, vri2)
-    vri_moose <- sf::st_join(vri_moose, vri3)
-    vri_moose <- sf::st_join(vri_moose, vri4)
-    vri_moose <- sf::st_join(vri_moose, vri5)
-    vri_moose <- sf::st_join(vri_moose, vri6)
-
+    vri_moose <- bind_rows(vri1, vri2, vri3, vri4, vri5, vri6)
 
     vri_moose <- sf::st_union(vri_moose)
 

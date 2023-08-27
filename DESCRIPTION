@@ -18,6 +18,7 @@ Imports:
     bcdata,
     bcmaps,
     dplyr,
+    foreach,
     fs,
     magrittr,
     sf,

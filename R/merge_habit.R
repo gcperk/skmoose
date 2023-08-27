@@ -19,7 +19,7 @@ merge_habit <- function(tmp_aoi, temp_out_dir) {
                   "fires_filtered.gpkg",
                   "streams3_8.gpkg",
                   "streams9.gpkg",
-                  "wetland.gpkg",
+                  "wetlands.gpkg",
                   "smalllakes.gpkg")
 
 
@@ -66,12 +66,18 @@ merge_habit <- function(tmp_aoi, temp_out_dir) {
 
 
     # check wetlands
-    if(file.exists(file.path(temp_out_dir,"wetland.gpkg"))){
-      wet<- sf::st_read(file.path(temp_out_dir,"wetland.gpkg"),quiet = TRUE)
+    if(file.exists(file.path(temp_out_dir,"wetlands.gpkg"))){
+      wet<- sf::st_read(file.path(temp_out_dir,"wetlands.gpkg"),quiet = TRUE)
       hab  <- sf::st_union(wet, hab)
       hab <- sf::st_union(hab)
     }
 
+    # check smalllakes
+    if(file.exists(file.path(temp_out_dir,"smalllakes.gpkg"))){
+      lake <- sf::st_read(file.path(temp_out_dir,"smalllakes.gpkg"),quiet = TRUE)
+      hab  <- sf::st_union(lake, hab)
+      hab <- sf::st_union(hab)
+    }
 
     # crop to the study area
     hab_all = sf::st_intersection(hab, tmp_aoi)

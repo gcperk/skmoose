@@ -53,8 +53,10 @@ merge_nonhabit <- function(tmp_aoi, temp_out_dir) {
 
     # crop to the study area
     unhab_all = sf::st_intersection(unh, tmp_aoi)
-    st_write(unhab_all, file.path(temp_out_dir, "uninhabitable.gpkg"), append = FALSE, quiet = TRUE)
 
+    if(length(st_is_empty(unhab_all )< 1)){
+    st_write(unhab_all, file.path(temp_out_dir, "uninhabitable.gpkg"), append = FALSE, quiet = TRUE)
+    }
     #return(unhab_all)
 
   } else {
