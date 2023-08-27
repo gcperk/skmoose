@@ -24,9 +24,9 @@ Lands & Resources Stewardship.
 Optional additional data can be extracted including confidential survey
 telemetry data, however this is dependant on outside sources.
 
-Two vignettes are provided as a guide for users. These include a
-detailed version which steps through each part of the process and an
-abreviated version. A test dataset is provided within the package to
+A vignette is provided as a guide for users. These include a detailed
+step by step of all function in the package resulting in a csv table
+with compiled results. A test dataset is provided within the package to
 assist with understanding the process.
 
 ## Installation
