@@ -127,6 +127,11 @@ This includes :
 If there are sections within the study area that meet these criteria they will be saved as a new .gpkg within the folder of the particular block. If no additional files are written out, then the criteria are not met. 
 
 ```{r}
+# set thresholds
+
+eval_threshold = 1500
+slope_threshold = 55
+
 
 uninhab <- foreach(x = blockno[1:10]) %dopar% {
   
@@ -157,8 +162,6 @@ uninhab <- foreach(x = blockno[1:10]) %dopar% {
 }
   # 3. filter elevations above threshold value
 
-  eval_threshold = 1500
-
   trim <- terra::rast(file.path(temp_out_dir, "dem.tif"))
   high_elev_sf <- high_elev(trim, eval_threshold )
   
@@ -167,7 +170,6 @@ uninhab <- foreach(x = blockno[1:10]) %dopar% {
     }
 
   # 4. filter high slope 
-   slope_threshold = 55
   
    steep_sf <- steep_slope(trim, slope_threshold)
    
@@ -217,6 +219,12 @@ o	Skeena Wildlife Ecological Resource Model- Winter forage output
 
 ```{r}
 
+# set thresholds
+cutblock_min_yr = 5
+cutblock_max_yr = 40
+fire_min_yr = 5
+fire_max_yr = 40
+
 habitable <- foreach(x = blockno[1:10]) %dopar% {
   
    # x = blockno[1]
@@ -240,7 +248,7 @@ habitable <- foreach(x = blockno[1:10]) %dopar% {
     if("cutblocks.gpkg"  %in% list.files(temp_out_dir)){
   
       cutblocks <- st_read(file.path(temp_out_dir, "cutblocks.gpkg"),quiet = TRUE)
-      cutblocks_yrs <- cutblocks_recent(cutblocks, cutblock_min_yr = 5, cutblock_max_yr = 40)
+      cutblocks_yrs <- cutblocks_recent(cutblocks, cutblock_min_yr, cutblock_max_yr)
       
     if(length(st_is_empty(decid)) > 0 ){
        print("contains cutblocks")
@@ -251,10 +259,8 @@ habitable <- foreach(x = blockno[1:10]) %dopar% {
   # get recent fire years 
 
    if("fire.gpkg" %in% list.files(temp_out_dir)){
-    
-     
   fires <- st_read(file.path(temp_out_dir, "fire.gpkg"),quiet = TRUE)
-  fires_filtered <- fires_recent(fires, fire_min_yr = 5, fire_max_yr = 40 )
+  fires_filtered <- fires_recent(fires, fire_min_yr, fire_max_yr)
   
    if(length(st_is_empty(fires)) > 0 ){
      
@@ -339,7 +345,7 @@ habitable <- foreach(x = blockno[c(1:10)]) %dopar% {
   
     }
   
-     }
+  }
    
 ```
 
