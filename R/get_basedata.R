@@ -14,6 +14,9 @@
 
 get_basedata <- function(in_aoi, out_path){
 
+  #in_aoi = tmp_aoi
+  #out_path = temp_out_dir
+
   if(missing(in_aoi)) stop("'aoi' is missing with no default")
 
   # Second, detect object type and convert where necessary
@@ -65,10 +68,10 @@ get_basedata <- function(in_aoi, out_path){
       # Uses date filter which filters lakes
       lakes <- bcdata::bcdc_query_geodata("cb1e3aba-d3fe-4de1-a2d4-b8b6650fb1f6") %>%
         bcdata::filter(bcdata::INTERSECTS(in_aoi)) %>%
-        bcdata::collect() %>%
-        dplyr::select("id", "WATERBODY_TYPE", "AREA_HA")
+        bcdata::collect()
 
       if(length(st_is_empty(lakes)) > 0 ){
+      lakes <- lakes %>% dplyr::select("id", "WATERBODY_TYPE", "AREA_HA")
       sf::st_write(lakes, file.path(out_path, "lakes.gpkg"), append = FALSE)
       }
 

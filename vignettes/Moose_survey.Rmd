@@ -92,10 +92,10 @@ registerDoSEQ()
 
 # loop through each block and extract the basedata. These will be filtered and a copy saved under the respective file folder. 
 
-basedata <- foreach(x = blockno[5]) %dopar% {
+basedata <- foreach(x = blockno[1:10]) %dopar% {
   
   # test line - if you want to run a single block 
-  #x = blockno[197]
+  #x = blockno[9]
   
   tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
   temp_out_dir <- file.path(out_dir, x)
@@ -111,11 +111,6 @@ basedata <- foreach(x = blockno[5]) %dopar% {
   print(x)
   
 }
-
-
-#get_basedata(in_aoi = aoi_simple, out_path = out_dir)
-#get_basedata(in_aoi = aoi, out_path = out_dir)
-
 
 ```
 
@@ -133,7 +128,7 @@ If there are sections within the study area that meet these criteria they will b
 
 ```{r}
 
-uninhab <- foreach(x = blockno[5]) %dopar% {
+uninhab <- foreach(x = blockno[1:10]) %dopar% {
   
   #x = blockno[197]
   
@@ -152,14 +147,14 @@ uninhab <- foreach(x = blockno[5]) %dopar% {
       sf::st_write(rockice, file.path(temp_out_dir, "rockice.gpkg"), append = FALSE)}
 
   # 2. filter lakes with >1 km2
-
+  if(file.exists(file.path(temp_out_dir,"lakes.gpkg"))){
   largelakes <- st_read(file.path(temp_out_dir, "lakes.gpkg")) %>%
       dplyr::filter(AREA_HA > 100) %>%
       st_union()
 
      if(length(st_is_empty(largelakes)< 1)){
     st_write(largelakes, file.path(temp_out_dir, "largelakes.gpkg"), append = FALSE)}
-
+}
   # 3. filter elevations above threshold value
 
   eval_threshold = 1500
@@ -191,7 +186,7 @@ For each block we then combine the uninhabitable area into a single polygon and 
 ```{r}
 # merge uninhabitable area 
 
-uninhab <- foreach(x = blockno[5]) %dopar% {
+uninhab <- foreach(x = blockno[1:10]) %dopar% {
   
   #x = blockno[197]
   print(x)
@@ -222,7 +217,7 @@ o	Skeena Wildlife Ecological Resource Model- Winter forage output
 
 ```{r}
 
-habitable <- foreach(x = blockno[5]) %dopar% {
+habitable <- foreach(x = blockno[1:10]) %dopar% {
   
    # x = blockno[1]
     print(x)
@@ -322,7 +317,7 @@ For each block we then combine all the outputs into a single moose habitat layer
 ```{r}
 # merge uninhabitable area 
 
-habitable <- foreach(x = blockno[c(5)]) %dopar% {
+habitable <- foreach(x = blockno[c(1:10)]) %dopar% {
   
  #x = blockno[5]
   
@@ -356,8 +351,7 @@ For each block we will read in the habitable and inhabitable areas and calculate
 
 ```{r}
 
-out_table <- calculate_areas(blockno[1:4], aoi, out_dir)
-
+out_table <- calculate_areas(blockno[1:10], aoi, out_dir)
 
 write.csv(out_table, file.path(out_dir, "survey_areas.csv"))
 
