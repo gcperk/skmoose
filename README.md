@@ -8,10 +8,11 @@
 [![Lifecycle:Experimental](https://img.shields.io/badge/Lifecycle-Experimental-339999)](Redirect-URL)
 <!-- badges: end -->
 
-SKmoose is used to assess moose habitat quality within given survey
-blocks under aseries of criteria. This package provides a number of
-functions to extract data, estimate habitat and inhabitable areas within
-each block and report the values in a table.
+[SKmoose](https://gcperk.github.io/skmoose/index.html) is used to assess
+moose habitat quality within given survey blocks under aseries of
+criteria. This package provides a number of functions to extract data,
+estimate habitat and inhabitable areas within each block and report the
+values in a table.
 
 Where possible, data used in the process is extracted directly from the
 BC data catalogue, using [bcdata](https://github.com/bcgov/bcdata) and
