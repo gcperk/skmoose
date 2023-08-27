@@ -132,7 +132,7 @@ This includes :
 If there are sections within the study area that meet these criteria they will be saved as a new .gpkg within the folder of the particular block. If no additional files are written out, then the criteria are not met. 
 
 ```{r}
-uninhab <- foreach(x = blockno[1:10]) %dopar% {
+uninhab <- foreach(x = blockno[1:5]) %dopar% {
   
   #x = blockno[197]
   
@@ -185,14 +185,14 @@ uninhab <- foreach(x = blockno[1:10]) %dopar% {
 ```
 
 
-# Combine the uninhabitable area. 
+# Combine uninhabitable area. 
 
 For each block we then combine the uninhabitable area into a single polygon and clip to the block boundary. The output file will be called "uninhabitable.gpkg"
 
 ```{r}
 # merge uninhabitable area 
 
-uninhab <- foreach(x = blockno[1:10]) %dopar% {
+uninhab <- foreach(x = blockno[1:4]) %dopar% {
   
   #x = blockno[197]
   print(x)
@@ -208,16 +208,14 @@ uninhab <- foreach(x = blockno[1:10]) %dopar% {
 
 ## Extract Moose Habitat
 
-We now compiled all the moose habitat areas 
-This includes : 
+We now compiled all the moose habitat areas. This involves reading in the base data and filtering for 
+
 - Deciduous tree species, queried in VRI: [SPECIES_CD LIKE 'A%' OR SPECIES_CD = 'EP' OR SPECIES_CD = 'SB' OR SPECIES__1 LIKE 'A%' OR SPECIES__1 = 'EP' OR SPECIES__1 = 'SB' OR SPECIES__3 LIKE 'A%' OR SPECIES__3 = 'EP' OR SPECIES__3 ='SB' OR SPECIES__5 LIKE 'A%' OR SPECIES__5 LIKE 'E%']
 
 - Early seral/shrub dynamic habitats: Fires that are >5 and <40 years old 
-** this one I might have to think about a bit more as basically the entire study area has burnt in 2014, 2018, 2021 or 2023. In 2018 we created a 4th stratum called Burnt so may look at potentially completed this again.
-
-o	Cutblocks that are >5 and < 40 years old 
-o	Buffered 3-8 order streams from FWA stream dataset by 150m (dissolved) 
-o	9th order streams buffered by 500 meters. 
+- Cutblocks that are  >5 and < 40 years old 
+- Buffered 3-8 order streams from FWA stream dataset by 150m (dissolved) 
+- 9th order streams buffered by 500 meters. 
 o	Wetlands from FWA ≤ 1 km2
 o	Skeena Wildlife Ecological Resource Model- Winter forage output 
 
@@ -225,7 +223,7 @@ o	Skeena Wildlife Ecological Resource Model- Winter forage output
 
 ```{r}
 
-habitable <- foreach(x = blockno[1:10]) %dopar% {
+habitable <- foreach(x = blockno[1:4]) %dopar% {
   
    # x = blockno[10]
     print(x)
@@ -275,9 +273,6 @@ habitable <- foreach(x = blockno[1:10]) %dopar% {
     
   # get stream order and buffer by stream order, stream order 3 - 8 is 150m buffer, stream order 9 bufferd by 500m 
   
-# Buffered 3-8 order streams from FWA stream dataset by 150m (dissolved) 
-#- 9th order streams buffered by 500 meters. 
-  
    if("streams.gpkg"  %in% list.files(temp_out_dir)){
 
     streams <- st_read(file.path(temp_out_dir, "streams.gpkg"), quiet = TRUE) 
@@ -297,8 +292,7 @@ habitable <- foreach(x = blockno[1:10]) %dopar% {
     
    }
  
-     
-    # wetlands already filtered to < 100 Ha Area
+    # select small lakes and all wetlands (previously filtered to < 100 Ha Area. 
     
    if("lakes.gpkg" %in% list.files(temp_out_dir)){
 
@@ -313,10 +307,8 @@ habitable <- foreach(x = blockno[1:10]) %dopar% {
       }
    }
     
-    
-    
   #Skeena Wildlife Ecological Resource Model- Winter forage output 
-  
+  # STILL TO ADD
   
 }
   
@@ -324,7 +316,7 @@ habitable <- foreach(x = blockno[1:10]) %dopar% {
 ```
 
 
-# combine the habitable area for each block
+#### Merge habitable layers into single file per block
 
 For each block we then combine all the outputs into a single moose habitat layer called "habitat.gpkg".
 
@@ -347,7 +339,7 @@ habitable <- foreach(x = blockno[c(1:4)]) %dopar% {
      uninh <- st_read(file.path(temp_out_dir, "uninhabitable.gpkg"),quiet = TRUE)
      hab <- st_read(file.path(temp_out_dir, "habitable.gpkg"),quiet = TRUE)
   
-      habit <- st_intersection(uninh,  hab)
+    habit <- st_intersection(uninh,  hab)
     final_hab <- st_difference(hab, uninh)
     st_write(final_hab, file.path(temp_out_dir, "habitable.gpkg"), quiet = TRUE, append = FALSE)
   
@@ -356,73 +348,36 @@ habitable <- foreach(x = blockno[c(1:4)]) %dopar% {
      }
    
 ```
-Calculate the areas for habitat and non-habitable in each block and output a table 
+
+
+## Calculate areas for habitat and non-habitable
+
+For each block we will read in the habitable and inhabitable areas and calculate the areas and proportions for each block. A table is
 
 
 ```{r}
 
-area_tab <- foreach(x = blockno[1:10], .combine=rbind) %dopar% {
-  
-  #x = blockno[1]
-  tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
-  temp_out_dir <- file.path(out_dir, x)
-  
-  block_area <- st_area(tmp_aoi)
+out_table <- calculate_areas(blockno[1:4], aoi, out_dir)
 
-  if(file.exists(file.path(temp_out_dir,"uninhabitable.gpkg"))){
- 
-     uninh <- st_read(file.path(temp_out_dir, "uninhabitable.gpkg"))
-     
-     uninh_area <- st_area(uninh)[1]
-     
-  } else {
-    
-     uninh_area <- 0
-     
-  }
-     
-  
-  if(file.exists(file.path(temp_out_dir,"habitable.gpkg"))){
- 
-     hab <- st_read(file.path(temp_out_dir, "habitable.gpkg"))
-     
-     hab_area <- st_area(hab)[1]
-     
-  } else {
-    
-     hab_area <- 0
-     
-  }
-  
-  tline <- c(x, block_area, uninh_area, hab_area)
-  tline
-}
 
-  area_tab <- as.data.frame(area_tab, row.names = FALSE)
-  names(area_tab) <- c("bk", "total_area_m2", "uninh_area_m2", "hab_area_m2")
+write.csv(out_table, file.path(out_dir, "survey_areas.csv"))
 
-  area_tab
+
+```
+
+
+# Moose Habitat Strata Classification 
   
-  
-  # calculations 
-  
-  area_final <- area_tab %>% 
-    rowwise() %>%
-    mutate(prop_uninh_block = uninh_area_m2/total_area_m2) %>%
-    mutate(net_habitat_area_m2 = total_area_m2 - uninh_area_m2)%>%
-    mutate(prop_habit_block_m2 = hab_area_m2/total_area_m2) %>%
-    mutate(prop_habit_net_habit_m2 = hab_area_m2/net_habitat_area_m2 )
-    
-  
-  # Moose Habitat Strata Classification 
 #This will likely be based on Proportion of Moose Habitat/Block Area (Column G). Breaks #in proportions to be determined.
   
+  
+```{r}
   library(ggplot2)
   
   ggplot(area_final, aes(prop_habit_block_m2))+ 
   geom_bar()
   
-  
-
 ```
 
+  
+ 
