@@ -24,7 +24,7 @@ merge_habit <- function(tmp_aoi, temp_out_dir) {
 
 
   if(any(hab_sf %in% list.files(temp_out_dir))){
-    print("contains uninhabitable areas")
+    print("contains habitable areas")
 
     # create blank sf object to add to
     hab <-  sf::st_sf(st_sfc(), crs = 3005)

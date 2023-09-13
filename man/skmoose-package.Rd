@@ -12,6 +12,7 @@ Extract all required base data to assess moose inaccessible areas and mooose bro
 Useful links:
 \itemize{
   \item \url{https://github.com/gcperk/skmoose}
+  \item \url{https://gcperk.github.io/skmoose/}
   \item Report bugs at \url{https://github.com/gcperk/skmoose/issues}
 }
 
