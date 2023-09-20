@@ -59,16 +59,22 @@ calculate_areas <- function(blockno, aoi, out_dir){
     }
 
 area_tab <- as.data.frame(area_tab, row.names = FALSE)
-names(area_tab) <- c("bk", "total_area_km2", "uninh_area_km2", "hab_area_km2")
+names(area_tab) <- c("BlockID", "block_area_km2", "uninhab_area_km2", "habitat_area_km2")
 
 # calculations
 
 area_final <- area_tab %>%
   rowwise() %>%
-  mutate(prop_uninh_block = uninh_area_km2/total_area_km2) %>%
-  mutate(net_habitat_area_km2 = total_area_km2 - uninh_area_km2)%>%
-  mutate(prop_habit_block_km2 = hab_area_km2/total_area_km2) %>%
-  mutate(prop_habit_net_habit_km2 = hab_area_km2/net_habitat_area_km2 )
+  mutate(prop_uninhab_block = uninhab_area_km2/block_area_km2) %>%
+  mutate(net_habitat_area_km2 = block_area_km2 - uninhab_area_km2)%>%
+  mutate(prop_habit_block_km2 = habitat_area_km2/block_area_km2) %>%
+  mutate(prop_habit_net_habit_km2 = habitat_area_km2/net_habitat_area_km2 )
+
+area_final  <- area_final%>%
+  dplyr::select(BlockID, "block_area_km2" , "uninhab_area_km2", "prop_uninhab_block", "net_habitat_area_km2",
+                "habitat_area_km2", "prop_habit_block_km2", "prop_habit_net_habit_km2") %>%
+  mutate_if(is.numeric, round, 2)
+
 
 
 return(area_final)
