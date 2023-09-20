@@ -23,12 +23,14 @@ calculate_areas <- function(blockno, aoi, out_dir){
 
 
       block_area <- sf::st_area(tmp_aoi)
+      block_area <- block_area/1000000
 
       if(file.exists(file.path(temp_out_dir,"uninhabitable.gpkg"))){
 
         uninh <- sf::st_read(file.path(temp_out_dir, "uninhabitable.gpkg"), quiet = TRUE)
 
         uninh_area <- sf::st_area(uninh)[1]
+        uninh_area <- uninh_area/1000000
 
       } else {
 
@@ -42,6 +44,7 @@ calculate_areas <- function(blockno, aoi, out_dir){
         hab <- sf::st_read(file.path(temp_out_dir, "habitable.gpkg"),quiet = TRUE)
 
         hab_area <- sf::st_area(hab)[1]
+        hab_area <- hab_area/1000000
 
       } else {
 
@@ -56,16 +59,16 @@ calculate_areas <- function(blockno, aoi, out_dir){
     }
 
 area_tab <- as.data.frame(area_tab, row.names = FALSE)
-names(area_tab) <- c("bk", "total_area_m2", "uninh_area_m2", "hab_area_m2")
+names(area_tab) <- c("bk", "total_area_km2", "uninh_area_km2", "hab_area_km2")
 
 # calculations
 
 area_final <- area_tab %>%
   rowwise() %>%
-  mutate(prop_uninh_block = uninh_area_m2/total_area_m2) %>%
-  mutate(net_habitat_area_m2 = total_area_m2 - uninh_area_m2)%>%
-  mutate(prop_habit_block_m2 = hab_area_m2/total_area_m2) %>%
-  mutate(prop_habit_net_habit_m2 = hab_area_m2/net_habitat_area_m2 )
+  mutate(prop_uninh_block = uninh_area_km2/total_area_km2) %>%
+  mutate(net_habitat_area_km2 = total_area_km2 - uninh_area_km2)%>%
+  mutate(prop_habit_block_km2 = hab_area_km2/total_area_km2) %>%
+  mutate(prop_habit_net_habit_km2 = hab_area_km2/net_habitat_area_km2 )
 
 
 return(area_final)

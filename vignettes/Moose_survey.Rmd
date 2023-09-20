@@ -394,6 +394,7 @@ out <- out %>%
     prop_habit_net_habit_m2 > low & prop_habit_net_habit_m2 < high ~ "med"
   ))
 
+load_all()
 
   
   ggplot(area_final, aes(prop_habit_block_m2))+ 
