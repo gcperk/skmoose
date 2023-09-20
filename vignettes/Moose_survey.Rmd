@@ -184,7 +184,7 @@ uninhab <- foreach(x = blockno) %dopar% {
 ```
 
 
-# Combine uninhabitable area. 
+## Combine uninhabitable area. 
 
 For each block we then combine the uninhabitable area into a single polygon and clip to the block boundary. The output file will be called "uninhabitable.gpkg"
 
@@ -319,7 +319,7 @@ habitable <- foreach(x = blockno) %dopar% {
 ```
 
 
-#### Merge habitable layers into single file per block
+## Merge habitable layers into single file per block
 
 For each block we then combine all the outputs into a single moose habitat layer called "habitat.gpkg".
 
@@ -367,7 +367,7 @@ write.csv(out_table, file.path(out_dir, "moose_stratification_outputs.csv"), row
 ```
 
 
-# Optional: Moose Habitat Strata Classification 
+### Optional: Moose Habitat Strata Classification 
   
 Assign Moose blocks into stratification of High, Medium, Low for further review. This will be based on the Proportion of Moose Habitat/Block Area (prop_habit_block_km2)
 
