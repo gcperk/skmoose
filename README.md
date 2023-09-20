@@ -23,7 +23,7 @@ This package was written for Skeena Region under the Ministry of Water,
 Lands & Resources Stewardship.
 
 Optional additional data can be extracted including confidential survey
-telemetry data, however this is dependant on outside sources.
+telemetry data, however this is dependent on outside sources.
 
 A vignette is provided as a guide for users. These include a detailed
 step by step of all function in the package resulting in a csv table
@@ -95,29 +95,44 @@ criteria
 
 Once the area of moose habitat and uninhabitable areas has been
 calculated, we then estimate the area and combine these into a single
-table.
+table (csv).
 
 The table contains the following fields:
 
 - bk = block id number
 
-- total_area_m2 = total area of block in m2
+- block_area_km2 = total area of block in m2
 
-- uninh_area_m2 = total uninhabitable area of the block (m2)
+- uninh_area_km2 = total uninhabitable area of the block (km2)
 
-- hab_area_m2 = total habitable area within each block (m2)
+- prop_uninh_block = proportion of uninhabitable area of each block
+  (0-1). (uninh_area_km2/block_area_km2)
 
-- prop_uninh_block = proportion of uninhabitable area of each block.
-  (uninh_area_m2/total_area_m2)
+- net_habitat_area_km2 = Net area of habitat available within each block
+  (km2) (block_area_km2 - uninh_area_km2)
 
-- net_habitat_area_m2 = Net area of habitat available within each block
-  (m2) (total_area_m2 - uninh_area_m2)
+- hab_area_km2 = total habitable area within each block (km2)
 
-- prop_habit_block_m2 = Proportion of habitat within the total area of
-  the block (m2) (hab_area_m2/total_area_m2)
+- prop_habit_block_km2 = Proportion of habitat within the total area of
+  the block (km2) (hab_area_km2/block_area_km2)
 
-- prop_habit_net_habit_m2 = proportion of habitat within the net area of
-  the block (hab_area_m2/net_habitat_area_m2)
+- prop_habit_net_habit_km2 = proportion of habitat within the net area
+  of the block (hab_area_km2/net_habitat_area_km2)
+
+## OPTIONAL: Moose Habitat Strata Classification
+
+Two options exist to automate the classify of blocks into
+Low/Medium/High categories based on the proportion of Moose
+Habitat/Block Area (prop_habit_block_km2).
+
+Values can be based on specific numeric thresholds, with default values
+of low (0 - 0.4), medium (0.41 - 0.7) and high (\>0.71). Alternatively
+the values can be calculated based on quartiles of the distribution, in
+which cutoff values are selected based on the distribution of all values
+in the blocks.
+
+These steps also produce a table, and an optional spatial file for
+review and adjustment.
 
 ### Appendix A
 

@@ -42,7 +42,7 @@ bks_name <- file.path(data_location, data_file)
 
 # Alternatively you can read in an entire data set by pointing to the file location as shown below: 
 
-#bks_name <- file.path("C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_block_surveyR\\02.Data", "Tweedsmuir-SRBblocks.gpkg")
+#bks_name <- file.path("C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_ block_surveyR\\02.Data", "Tweedsmuir-SRBblocks.gpkg")
 
 ```
 
@@ -362,57 +362,41 @@ For each block we will read in the habitable and inhabitable areas and calculate
 
 out_table <- calculate_areas(blockno[1:11], aoi, out_dir)
 
-write.csv(out_table, file.path(out_dir, "survey_areas.csv"))
+write.csv(out_table, file.path(out_dir, "moose_stratification_outputs.csv"), row.names = FALSE)
 
 ```
 
 
-# Moose Habitat Strata Classification 
+# Optional: Moose Habitat Strata Classification 
   
-#This will likely be based on Proportion of Moose Habitat/Block Area (Column G). Breaks #in proportions to be determined.
-  
+Assign Moose blocks into stratification of High, Medium, Low for further review. This will be based on the Proportion of Moose Habitat/Block Area (prop_habit_block_km2)
+
+Two proposed methods include 
+1) Assign values based on set thresholds, i.e: 0-40% =L, #41-70%= Moderate, 71-100%, 71-100% = High
+2) Assign values based on distribution of all block values. 
+
   
 ```{r}
-  library(ggplot2)
-library(stats)
-#I am still trying to figure out what breaks were used in 2019, it looks #like for the 2018 BVLD survey they were arbitrarily selected at 0-40% =L, #41-70%= Moderate, 71-100%, 71-100% = High. And then the blocks were #adjusted based on past survey data and expert opinion but no clear rules. I #like your idea for the distribution of values if we can try that out to get #round 1 of stratification. 
+# Option 1: set thresholds based on the top value in each catergorty. 
+# Note you can adjust low, med and high values within the funtion
 
-#quantile(x <- rnorm(1001)) # Extremes & Quartiles by default
-#quantile(x,  probs = c(0.1, 0.5, 1, 2, 5, 10, 50, NA)/100)
+out <- assign_categories(out_table, low = 0.4, med = 0.7, high = 1)
 
 
-out <- out_table %>% 
-  filter(bk> 10)
+# OR
+# option 2:  estimate thresholds based on the quantiles ie: 
 
-qts <- quantile(out$prop_habit_net_habit_m2)
 
-low <- qts[[2]]
-med <- qts[[3]]
-high <- qts[[4]]
+outq <- assign_categories(out_table, quartile = TRUE)
 
-out <- out %>% 
-  mutate(class = case_when(
-    prop_habit_net_habit_m2 < low ~ "low", 
-    prop_habit_net_habit_m2 > high ~ "high", 
-    prop_habit_net_habit_m2 > low & prop_habit_net_habit_m2 < high ~ "med"
-  ))
 
-load_all()
+write.csv(out, file.path(out_dir, "moose_stratification_outputs_classed.csv"), row.names = FALSE)
 
-  
-  ggplot(area_final, aes(prop_habit_block_m2))+ 
-  geom_bar()
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+# write out a spatial output with blocks and values; 
+
+sp_out <- merge(aoi, out)
+
+st_write(sp_out, file.path(out_dir, "moose_stratification_output.gpkg"),quiet = TRUE,append = FALSE)
+
 ```
-
-  
- 

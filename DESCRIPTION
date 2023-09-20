@@ -23,6 +23,7 @@ Imports:
     fs,
     magrittr,
     sf,
+    stats,
     terra
 RoxygenNote: 7.2.3
 Suggests: 
