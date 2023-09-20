@@ -76,9 +76,6 @@ functions.
 
 - Small lakes and wetlands which are less than 1 km2.
 
-- Skeena Wildlife Ecological Resource Model- Winter forage output -
-  still to be added.
-
 ## Criteria for uninhabitable areas
 
 Uninhabitable areas within the landscape are defined under the following
