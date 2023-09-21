@@ -398,5 +398,7 @@ write.csv(out, file.path(out_dir, "moose_stratification_outputs_classed.csv"), r
 sp_out <- merge(aoi, out)
 
 st_write(sp_out, file.path(out_dir, "moose_stratification_output.gpkg"),quiet = TRUE,append = FALSE)
+st_write(sp_out, file.path(out_dir, "moose_stratification_output.shp"),append = FALSE)
+
 
 ```
