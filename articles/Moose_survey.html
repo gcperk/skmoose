@@ -78,7 +78,8 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/gcperk/skmoose" class="external-link">skmoose</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu">load_all</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/gcperk/skmoose" class="external-link">skmoose</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
@@ -107,7 +108,7 @@ notes are provided to assist in using your own data set.</p>
 <span></span>
 <span><span class="co"># Alternatively you can read in an entire data set by pointing to the file location as shown below: </span></span>
 <span></span>
-<span><span class="co">#bks_name &lt;- file.path("C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_ block_surveyR\\02.Data", "Tweedsmuir-SRBblocks.gpkg")</span></span></code></pre></div>
+<span><span class="va">bks_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_block_surveyR\\02.Data\\Tweedsmuir-SRBblocks.gpkg"</span><span class="op">)</span></span></code></pre></div>
 <p>Read in the file and generate an individual block id number</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># read in and format the data </span></span>
@@ -129,7 +130,7 @@ to be saved. Note a folder will be generated for each block number
 <span><span class="va">out_dir</span> <span class="op">&lt;-</span> <span class="st">"C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_block_surveyR\\02.Data\\data"</span></span>
 <span></span>
 <span></span>
-<span><span class="co"># check if the folder already exists and if it doesnt create a folder</span></span>
+<span><span class="co"># check if the folder already exists and if it doesn't create a folder</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.exists</a></span><span class="op">(</span><span class="va">out_dir</span> <span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">out_dir</span> <span class="op">)</span></span>
 <span><span class="op">}</span><span class="kw">else</span><span class="op">{</span></span>
@@ -154,7 +155,7 @@ to run overnight.</p>
 <span><span class="co"># loop through each block and extract the spatial basedata. These will be filtered based on criteria provided </span></span>
 <span><span class="co"># and a copy saved under the respective file folder. </span></span>
 <span></span>
-<span><span class="va">basedata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">blockno</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">%dopar%</a></span> <span class="op">{</span></span>
+<span><span class="va">basedata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">blockno</span><span class="op">[</span><span class="fl">11</span><span class="op">:</span><span class="fl">12</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">%dopar%</a></span> <span class="op">{</span></span>
 <span>  </span>
 <span>  <span class="co"># test line - if you want to run a single block </span></span>
 <span>  <span class="co">#x = blockno[8]</span></span>
@@ -168,7 +169,7 @@ to run overnight.</p>
 <span>        <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"dir exists"</span><span class="op">)</span></span>
 <span>      <span class="op">}</span></span>
 <span></span>
-<span>      <span class="fu"><a href="../reference/get_basedata.html">get_basedata</a></span><span class="op">(</span>in_aoi <span class="op">=</span> <span class="va">tmp_aoi</span>, out_path <span class="op">=</span> <span class="va">temp_out_dir</span><span class="op">)</span></span>
+<span>      <span class="fu"><a href="../reference/get_basedata.html">get_basedata</a></span><span class="op">(</span>in_aoi <span class="op">=</span> <span class="va">tmp_aoi</span>, out_path <span class="op">=</span> <span class="va">temp_out_dir</span>, overwrite <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span>  </span>
@@ -452,7 +453,8 @@ Assign values based on distribution of all block values.</p>
 <span></span>
 <span><span class="va">sp_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">aoi</span>, <span class="va">out</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_write.html" class="external-link">st_write</a></span><span class="op">(</span><span class="va">sp_out</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">out_dir</span>, <span class="st">"moose_stratification_output.gpkg"</span><span class="op">)</span>,quiet <span class="op">=</span> <span class="cn">TRUE</span>,append <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_write.html" class="external-link">st_write</a></span><span class="op">(</span><span class="va">sp_out</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">out_dir</span>, <span class="st">"moose_stratification_output.gpkg"</span><span class="op">)</span>,quiet <span class="op">=</span> <span class="cn">TRUE</span>,append <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_write.html" class="external-link">st_write</a></span><span class="op">(</span><span class="va">sp_out</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">out_dir</span>, <span class="st">"moose_stratification_output.shp"</span><span class="op">)</span>,append <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 </div>
