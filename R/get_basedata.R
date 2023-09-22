@@ -2,6 +2,7 @@
 #'
 #' @param in_aoi an sf object containing a polygon with the area of interest to extract to
 #' @param out_path file folder location where raw data will be saved (as gpkg)
+#' @param overwrite TRUE or FALSE if you wish to overwrite existing data
 #'
 #' @return a series of geopackages with used as base data from moose strtatification
 #' @importFrom magrittr "%>%"
@@ -12,10 +13,11 @@
 #' get_basedata(in_aoi, out_path)
 #' }
 
-get_basedata <- function(in_aoi, out_path){
+get_basedata <- function(in_aoi, out_path, overwrite = FALSE){
 
   #in_aoi = tmp_aoi
   #out_path = temp_out_dir
+  #overwrite = FALSE
 
   if(missing(in_aoi)) stop("'aoi' is missing with no default")
 
@@ -39,6 +41,15 @@ get_basedata <- function(in_aoi, out_path){
   # 1: download vri
 
   get_VRI <- function(in_aoi, out_path) {
+
+    vri_exists <- file.exists(file.path(out_path, "vri.gpkg"))
+
+    if(overwrite == FALSE & vri_exists == TRUE) {
+
+    message("\rvri already exists, select overwrite = TRUE to force download of VRI layers")
+
+    } else {
+
     message("\rDownloading VRI layers")
 
     vri <- bcdata::bcdc_query_geodata("2ebb35d8-c82f-4a17-9c96-612ac3532d55") %>%
@@ -50,7 +61,7 @@ get_basedata <- function(in_aoi, out_path){
 
 
       sf::st_write(vri, file.path(out_path, "vri.gpkg"), append = FALSE)
-
+    }
     return(TRUE)
     }
 
@@ -58,6 +69,15 @@ get_basedata <- function(in_aoi, out_path){
   # 2. download water bodies
 
   get_water <- function(in_aoi, out_path) {
+
+    water_exists <- file.exists(file.path(out_path, "lakes.gpkg"))
+
+    if(overwrite == FALSE & water_exists == TRUE) {
+
+      message("\rwater already exists, skipping download, select overwrite = TRUE to force download of water layers")
+
+    } else {
+
 
       message("\rDownloading lake, streams and wetland layers")
 
@@ -89,12 +109,23 @@ get_basedata <- function(in_aoi, out_path){
         sf::st_write(wetlands, file.path(out_path, "wetlands.gpkg"), append = FALSE)
       }
 
+    }
+
       return(TRUE)
     }
 
   # 3. download stream index
 
   get_streams <- function(in_aoi, out_path) {
+
+    streams_exists <- file.exists(file.path(out_path, "streams.gpkg"))
+
+    if(overwrite == FALSE & streams_exists == TRUE) {
+
+      message("\r streams already exists, skipping download, select overwrite = TRUE to force download of water layers")
+
+    } else {
+
 
     message("\rDownloading streams")
 
@@ -107,7 +138,7 @@ get_basedata <- function(in_aoi, out_path){
   if(length(st_is_empty(streams)) > 0 ){
    sf::st_write(streams, file.path(out_path, "streams.gpkg"), append = FALSE)
   }
-
+}
    return(TRUE)
       }
 
@@ -115,6 +146,14 @@ get_basedata <- function(in_aoi, out_path){
   # 4. download fire history
 
   get_fires <- function(in_aoi, out_path) {
+
+    fire_exists <- file.exists(file.path(out_path, "fire.gpkg"))
+
+    if(overwrite == FALSE & fire_exists == TRUE) {
+
+      message("\rfirealready exists, skipping download, select overwrite = TRUE to force download of water layers")
+
+    } else {
 
       message("\rDownloading fire disturbance")
 
@@ -146,6 +185,7 @@ get_basedata <- function(in_aoi, out_path){
           sf::st_write(fires_all, file.path(out_path, "fire.gpkg"), append = FALSE)
         }
 
+    }
       return(TRUE)
       }
 
@@ -154,6 +194,14 @@ get_basedata <- function(in_aoi, out_path){
   # 5. download cutblocks
 
   get_harvest <- function(in_aoi, out_path) {
+
+    file_already_exists <- file.exists(file.path(out_path, "cutblocks.gpkg"))
+
+    if(overwrite == FALSE & file_already_exists == TRUE) {
+
+      message("\r cutblocks already exists, skipping download")
+
+    } else {
 
       message("\rDownloading cutblock layers")
 
@@ -165,6 +213,8 @@ get_basedata <- function(in_aoi, out_path){
     if (all(is.na(cutblocks)) || nrow(cutblocks) == 0) {
         print("No recent cutblocks disturbance in area of interest") } else {
     sf::st_write(cutblocks, file.path(out_path, "cutblocks.gpkg"), append = FALSE)
+        }
+
     }
     return(TRUE)
     }
@@ -173,6 +223,15 @@ get_basedata <- function(in_aoi, out_path){
   # download DEM via CDED package
 
     get_dem <- function(in_aoi, out_path){
+
+
+      file_already_exists <- file.exists(file.path(out_path, "dem.tif"))
+
+      if(overwrite == FALSE & file_already_exists == TRUE) {
+
+        message("\r dem already exists, skipping download")
+
+      } else {
 
       trim_raw <- bcmaps::cded_raster(in_aoi)
       trim <- terra::rast(trim_raw)
@@ -186,6 +245,7 @@ get_basedata <- function(in_aoi, out_path){
       #write out dem # in case
       terra::writeRaster(rslope, file.path(out_path, "slope.tif"), overwrite = TRUE)
 
+      }
       return(TRUE)
     }
 

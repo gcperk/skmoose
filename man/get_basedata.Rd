@@ -4,12 +4,14 @@
 \alias{get_basedata}
 \title{Get base data required from bc data catalogue}
 \usage{
-get_basedata(in_aoi, out_path)
+get_basedata(in_aoi, out_path, overwrite = FALSE)
 }
 \arguments{
 \item{in_aoi}{an sf object containing a polygon with the area of interest to extract to}
 
 \item{out_path}{file folder location where raw data will be saved (as gpkg)}
+
+\item{overwrite}{TRUE or FALSE if you wish to overwrite existing data}
 }
 \value{
 a series of geopackages with used as base data from moose strtatification
