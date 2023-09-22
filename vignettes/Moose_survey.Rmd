@@ -95,7 +95,7 @@ registerDoSEQ()
 # loop through each block and extract the spatial basedata. These will be filtered based on criteria provided 
 # and a copy saved under the respective file folder. 
 
-basedata <- foreach(x = blockno[11:12]) %dopar% {
+basedata <- foreach(x = blockno[17:25]) %dopar% {
   
   # test line - if you want to run a single block 
   #x = blockno[8]
