@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup, eval=FALSE}
+load_all()
 library(skmoose)
 library(sf)
 library(dplyr)
@@ -42,7 +43,7 @@ bks_name <- file.path(data_location, data_file)
 
 # Alternatively you can read in an entire data set by pointing to the file location as shown below: 
 
-#bks_name <- file.path("C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_ block_surveyR\\02.Data", "Tweedsmuir-SRBblocks.gpkg")
+bks_name <- file.path("C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_block_surveyR\\02.Data\\Tweedsmuir-SRBblocks.gpkg")
 
 ```
 
@@ -70,7 +71,7 @@ Create an output folder where you want the raw data geo spatial data to be saved
 out_dir <- "C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_block_surveyR\\02.Data\\data"
 
 
-# check if the folder already exists and if it doesnt create a folder
+# check if the folder already exists and if it doesn't create a folder
 if (!dir.exists(out_dir )){
   dir.create(out_dir )
 }else{
@@ -94,7 +95,7 @@ registerDoSEQ()
 # loop through each block and extract the spatial basedata. These will be filtered based on criteria provided 
 # and a copy saved under the respective file folder. 
 
-basedata <- foreach(x = blockno) %dopar% {
+basedata <- foreach(x = blockno[11:12]) %dopar% {
   
   # test line - if you want to run a single block 
   #x = blockno[8]
@@ -108,7 +109,7 @@ basedata <- foreach(x = blockno) %dopar% {
         print("dir exists")
       }
 
-      get_basedata(in_aoi = tmp_aoi, out_path = temp_out_dir)
+      get_basedata(in_aoi = tmp_aoi, out_path = temp_out_dir, overwrite = FALSE)
   
   print(x)
   
