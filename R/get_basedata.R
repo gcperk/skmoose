@@ -15,9 +15,14 @@
 
 get_basedata <- function(in_aoi, out_path, overwrite = FALSE){
 
+  #all aoi
+  in_aoi = aoi1
+  out_path = file.path(out_dir, "aoi20")
+  ## by block
   #in_aoi = tmp_aoi
   #out_path = temp_out_dir
-  #overwrite = FALSE
+
+  # overwrite = FALSE
 
   if(missing(in_aoi)) stop("'aoi' is missing with no default")
 
@@ -59,7 +64,6 @@ get_basedata <- function(in_aoi, out_path, overwrite = FALSE){
       bcdata::collect() %>%
       {if(nrow(.) > 0) sf::st_intersection(., in_aoi) else .}
 
-
       sf::st_write(vri, file.path(out_path, "vri.gpkg"), append = FALSE)
     }
     return(TRUE)
@@ -88,6 +92,7 @@ get_basedata <- function(in_aoi, out_path, overwrite = FALSE){
       # Uses date filter which filters lakes
       lakes <- bcdata::bcdc_query_geodata("cb1e3aba-d3fe-4de1-a2d4-b8b6650fb1f6") %>%
         bcdata::filter(bcdata::INTERSECTS(in_aoi)) %>%
+        bcdata::select(id, WATERBODY_TYPE, AREA_HA) %>%
         bcdata::collect()
 
       if(length(st_is_empty(lakes)) > 0 ){
@@ -99,13 +104,14 @@ get_basedata <- function(in_aoi, out_path, overwrite = FALSE){
 
       wetlands <- bcdata::bcdc_query_geodata("93b413d8-1840-4770-9629-641d74bd1cc6") %>%
         bcdata::filter(bcdata::INTERSECTS(in_aoi)) %>%
-        bcdata::collect() %>%
-        dplyr::select("id", "WATERBODY_TYPE", "AREA_HA")
+        bcdata::select(id, WATERBODY_TYPE, AREA_HA) %>%
+        bcdata::collect()
 
       wetlands <- wetlands %>% dplyr::filter(AREA_HA < 100) %>%
         sf::st_union()
 
       if(length(st_is_empty(wetlands) > 0)){
+        dplyr::select("id", "WATERBODY_TYPE", "AREA_HA")
         sf::st_write(wetlands, file.path(out_path, "wetlands.gpkg"), append = FALSE)
       }
 
@@ -129,16 +135,19 @@ get_basedata <- function(in_aoi, out_path, overwrite = FALSE){
 
     message("\rDownloading streams")
 
+  #streamd <- bcdc_describe_feature("92344413-8035-4c08-b996-65a9b3f62fca")
   streams <- bcdata::bcdc_query_geodata("92344413-8035-4c08-b996-65a9b3f62fca") %>%
     bcdata::filter(bcdata::INTERSECTS(in_aoi)) %>%
-    bcdata::collect() %>%
-    dplyr::select(c("id", "STREAM_ORDER"))%>%
-    sf::st_zm()
+    bcdata::select(c(id, STREAM_ORDER)) %>%
+    bcdata::collect()
 
   if(length(st_is_empty(streams)) > 0 ){
+    streams <- streams %>% dplyr::select(c("id", "STREAM_ORDER"))%>%
+      sf::st_zm()
+
    sf::st_write(streams, file.path(out_path, "streams.gpkg"), append = FALSE)
+    }
   }
-}
    return(TRUE)
       }
 
@@ -157,14 +166,19 @@ get_basedata <- function(in_aoi, out_path, overwrite = FALSE){
 
       message("\rDownloading fire disturbance")
 
+      # check the sticky columns
+      #ff<- bcdc_describe_feature("cdfc2d7b-c046-4bf0-90ac-4897232619e1")
+
       fire_records <- c("cdfc2d7b-c046-4bf0-90ac-4897232619e1",
                         "22c7cb44-1463-48f7-8e47-88857f207702")
 
       fires_all <- NA ## placeholder
 
       for (i in 1:length(fire_records)) {
+        #i = 2
         fires <- bcdata::bcdc_query_geodata(fire_records[i]) %>%
           bcdata::filter(bcdata::INTERSECTS(in_aoi)) %>%
+          bcdata::select(id, FIRE_YEAR)%>%
           collect() %>%
           {if(nrow(.) > 0) sf::st_intersection(., in_aoi) else .}
 
@@ -185,9 +199,9 @@ get_basedata <- function(in_aoi, out_path, overwrite = FALSE){
           sf::st_write(fires_all, file.path(out_path, "fire.gpkg"), append = FALSE)
         }
 
-    }
-      return(TRUE)
       }
+      return(TRUE)
+    }
 
 
 
@@ -224,7 +238,6 @@ get_basedata <- function(in_aoi, out_path, overwrite = FALSE){
 
     get_dem <- function(in_aoi, out_path){
 
-
       file_already_exists <- file.exists(file.path(out_path, "dem.tif"))
 
       if(overwrite == FALSE & file_already_exists == TRUE) {
@@ -254,7 +267,6 @@ get_basedata <- function(in_aoi, out_path, overwrite = FALSE){
     get_VRI(in_aoi, out_path)
     get_water(in_aoi, out_path)
     get_harvest(in_aoi, out_path)
-    get_water(in_aoi, out_path)
     get_streams(in_aoi, out_path)
     get_fires(in_aoi, out_path)
     get_dem(in_aoi, out_path)
