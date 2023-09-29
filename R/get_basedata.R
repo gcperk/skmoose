@@ -15,14 +15,10 @@
 
 get_basedata <- function(in_aoi, out_path, overwrite = FALSE){
 
-  #all aoi
-  in_aoi = aoi1
-  out_path = file.path(out_dir, "aoi20")
   ## by block
-  #in_aoi = tmp_aoi
+ # in_aoi = tmp_aoi
   #out_path = temp_out_dir
-
-  # overwrite = FALSE
+  #overwrite = FALSE
 
   if(missing(in_aoi)) stop("'aoi' is missing with no default")
 
@@ -67,6 +63,7 @@ get_basedata <- function(in_aoi, out_path, overwrite = FALSE){
       sf::st_write(vri, file.path(out_path, "vri.gpkg"), append = FALSE)
     }
     return(TRUE)
+
     }
 
 
@@ -108,10 +105,10 @@ get_basedata <- function(in_aoi, out_path, overwrite = FALSE){
         bcdata::collect()
 
       wetlands <- wetlands %>% dplyr::filter(AREA_HA < 100) %>%
+        dplyr::select(id, WATERBODY_TYPE, AREA_HA)%>%
         sf::st_union()
 
       if(length(st_is_empty(wetlands) > 0)){
-        dplyr::select("id", "WATERBODY_TYPE", "AREA_HA")
         sf::st_write(wetlands, file.path(out_path, "wetlands.gpkg"), append = FALSE)
       }
 
@@ -132,7 +129,6 @@ get_basedata <- function(in_aoi, out_path, overwrite = FALSE){
 
     } else {
 
-
     message("\rDownloading streams")
 
   #streamd <- bcdc_describe_feature("92344413-8035-4c08-b996-65a9b3f62fca")
@@ -148,7 +144,8 @@ get_basedata <- function(in_aoi, out_path, overwrite = FALSE){
    sf::st_write(streams, file.path(out_path, "streams.gpkg"), append = FALSE)
     }
   }
-   return(TRUE)
+
+    return(TRUE)
       }
 
 
@@ -232,7 +229,6 @@ get_basedata <- function(in_aoi, out_path, overwrite = FALSE){
     }
     return(TRUE)
     }
-
 
   # download DEM via CDED package
 
