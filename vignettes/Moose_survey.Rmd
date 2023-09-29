@@ -83,43 +83,6 @@ sf::st_write(aoi, file.path(out_dir, "aoi.gpkg"), append = FALSE)
 
 ```
 
-Firstly we need to check the size of the AOI fow download
-
-
-```{r}
-
-bcdata::bcdc_check_geom_size(aoi)
-
-
-
-
-```
-In this case the aoi is too large to perform spatial and needs to be divided into 4 
-
-
-```{r}
-nos <- length(blockno)/4
-
-# approximately 68 blocks
-
-aoi1 <- aoi %>% 
-  filter( bkname %in% (c(1:20)))
-
-bcdata::bcdc_check_geom_size(aoi1)
-aoitest<- aoi %>% filter(bkname == 2)
-
-```
-
-
-
-
-
-
-
-
-
-
-
 We can now begin to extract the base data for each block. This uses the bcdata and bcmaps package to pull data directly from the bcdata catalogue. The process is set up to iterate over each block. While this is not very fast, it provides a more stable method to reduce the incidence of timing out during large data downloads, specifically with the VRI dataset. 
 
 **WARNING**: this is the most time consuming part of the process and will take some time to run if extracting many blocks. Best to run overnight. 
@@ -132,18 +95,16 @@ registerDoSEQ()
 # loop through each block and extract the spatial basedata. These will be filtered based on criteria provided 
 # and a copy saved under the respective file folder. 
 
-# errors with 
-#21, 23 25 27
+# up to 269
 
-
-
-basedata <- foreach(x = blockno[23:26]) %dopar% {
+basedata <- foreach(x = blockno[241:269]) %dopar% {
   
   # test line - if you want to run a single block 
-  x = blockno[39]
+  x = blockno[26]
+  print(x)
   
   tmp_aoi <- aoi %>% dplyr::filter(bkname == x) 
-  st_bbox(tmp_aoi)
+  #st_bbox(tmp_aoi)
   temp_out_dir <- file.path(out_dir, x)
   
       if (!dir.exists(temp_out_dir)){
@@ -154,7 +115,7 @@ basedata <- foreach(x = blockno[23:26]) %dopar% {
 
       get_basedata(in_aoi = tmp_aoi, out_path = temp_out_dir, overwrite = FALSE)
   
-  print(x)
+  #print(x)
   
 }
 
@@ -181,7 +142,7 @@ slope_threshold = 55
 
 uninhab <- foreach(x = blockno) %dopar% {
   
-  #x = blockno[1]
+  x = blockno[26]
   
   tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
   temp_out_dir <- file.path(out_dir, x)
@@ -275,7 +236,6 @@ fire_max_yr = 40
 
 habitable <- foreach(x = blockno) %dopar% {
   
-   
    #x = blockno[1]
     print(x)
   
@@ -370,7 +330,7 @@ For each block we then combine all the outputs into a single moose habitat layer
 ```{r}
 # merge uninhabitable area 
 
-habitable <- foreach(x = blockno[c(1:11)]) %dopar% {
+habitable <- foreach(x = blockno) %dopar% {
  
   # x = blockno[1]
   
@@ -404,9 +364,9 @@ For each block we will read in the habitable and inhabitable areas and calculate
 
 ```{r}
 
-out_table <- calculate_areas(blockno[1:11], aoi, out_dir)
+out_table <- calculate_areas(blockno, aoi, out_dir)
 
-write.csv(out_table, file.path(out_dir, "moose_stratification_outputs.csv"), row.names = FALSE)
+write.csv(out_table, file.path(out_dir, "moose_stratification_outputs_final.csv"), row.names = FALSE)
 
 ```
 
