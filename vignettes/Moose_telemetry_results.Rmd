@@ -1,0 +1,72 @@
+---
+title: "Telemetry_data"
+author: "Gen Perkins"
+date: "2023-09-29"
+output: html_document
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  eval = FALSE,
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, eval=FALSE}
+load_all()
+library(skmoose)
+library(sf)
+library(dplyr)
+library(terra)
+library(foreach)
+
+```
+
+# read in the catergorised block data 
+
+```{r}
+# read in the test data 
+
+data_location <- fs::path_package("extdata", package = "skmoose")
+data_file <- skmoose::skmoose_example()
+bks_name <- file.path(data_location, data_file)
+
+# Alternatively you can read in an entire data set by pointing to the file location as shown below: 
+
+# create an output folder: 
+strat_dir <- "C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_block_surveyR\\02.Data\\data"
+
+
+# read in classified table
+classed <- read.csv(file.path(strat_dir, "moose_stratification_outputs_classed.csv"))
+
+
+# read in blank aoi
+aoi <-  sf::st_read(file.path(strat_dir, "aoi.gpkg"))
+
+# read in spatial statified blocks 
+sblk <- st_read(file.path(strat_dir, "moose_stratification_output.gpkg"))
+
+
+
+
+# read in the gpkg
+
+```
+
+Read in the file and generate an individual block id number 
+
+```{r}
+# read in and format the data 
+aoi <- sf::st_read(file.path(bks_name))
+aoi <- aoi %>%
+  dplyr::mutate(bkname = seq(1,length(aoi$Name), 1)) %>%
+  dplyr::select(bkname)%>%
+  st_zm()
+
+# generate a list with all unique block numbers to be used to iterate through the spatial extraction
+
+blockno <- as.list(unique(aoi$bkname))
+
+```
