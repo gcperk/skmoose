@@ -47,10 +47,10 @@ series of criteria with spatial data extracted from the bcdata
 catalogue. Uninhabitable areas are also estimated using a set of
 criteria. All spatial data is extracted on a per block area rather than
 an entire study area to improve efficiency of processing. Appendix A
-provides a full list of references and spatial queries. Once potenital
+provides a full list of references and spatial queries. Once potential
 habitat and inhabitable areas are compiled, total area of each are
 calculated to provide a means of stratifying moose survey blocks into
-catergories of Low, Medium and High. A table of all calculations is
+categories of Low, Medium and High. A table of all calculations is
 output for the user to review.
 
 ## Criteria for potential Moose habiat
@@ -86,7 +86,7 @@ criteria
 - Large waterbodies greater than 1km2
 
 - High elevation areas. The default cutoff is currently set to areas
-  above **1500 m**
+  above **1300 m**
 
 - Steep slopes. The default is currently set to greater than **55
   degrees**.
