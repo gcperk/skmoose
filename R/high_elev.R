@@ -9,7 +9,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' high_elev(dem, 1500)
+#' high_elev(dem, 1300)
 #' }
 
 
