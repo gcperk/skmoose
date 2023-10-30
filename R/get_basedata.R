@@ -16,9 +16,9 @@
 get_basedata <- function(in_aoi, out_path, overwrite = FALSE){
 
   ## by block
- # in_aoi = tmp_aoi
-  #out_path = temp_out_dir
-  #overwrite = FALSE
+ #in_aoi = tmp_aoi
+ #out_path = temp_out_dir
+ #overwrite = FALSE
 
   if(missing(in_aoi)) stop("'aoi' is missing with no default")
 
@@ -200,9 +200,58 @@ get_basedata <- function(in_aoi, out_path, overwrite = FALSE){
       return(TRUE)
     }
 
+  # 5. download fire intensity
+
+  get_fire_intensity <- function(in_aoi, out_path) {
+
+    fire_int_exists <- file.exists(file.path(out_path, "fire_int.gpkg"))
+
+    if(overwrite == FALSE & fire_int_exists == TRUE) {
+
+      message("\r fire intensity already exists, skipping download, select overwrite = TRUE to force download of water layers")
+
+    } else {
+
+      message("\rDownloading fire intensity")
+      # check the sticky columns
+      #ff<- bcdc_describe_feature("cdfc2d7b-c046-4bf0-90ac-4897232619e1")
+
+      fire_int_records <- c("c58a54e5-76b7-4921-94a7-b5998484e697",
+                        "04c5ad28-d8eb-4c49-90c5-48b9b98fdfe9")
+
+      fires_int_all <- NA ## placeholder
+
+      for (i in 1:length(fire_int_records)) {
+        #i = 1
+        fires_int <- bcdata::bcdc_query_geodata(fire_int_records[i]) %>%
+          bcdata::filter(bcdata::INTERSECTS(in_aoi)) %>%
+          bcdata::select(id, FIRE_YEAR, BURN_SEVERITY_RATING)%>%
+          bcdata::filter(BURN_SEVERITY_RATING %in% c("High", "Medium")) %>%
+          collect() %>%
+          {if(nrow(.) > 0) sf::st_intersection(., in_aoi) else .}
+
+        if(nrow(fires_int) > 0) {
+          ## bind results of loops
+          if (i == 1) {
+            fires_int_all <- fires_int } else { ## i > 1
+              if(all(is.na(fires_int_all))) {fires_int_all <- fires_int } else {fires_int_all <- rbind(fires_int_all, fires_int)}
+            }
+        }
+
+      } ## end loop
 
 
-  # 5. download cutblocks
+      if (all(is.na(fires_int_all)) || nrow(fires_int_all) == 0) {
+        print("No recent fire intensity in area of interest") } else {
+          sf::st_write(fires_int_all, file.path(out_path, "fire_int.gpkg"), append = FALSE)
+        }
+
+    }
+    return(TRUE)
+  }
+
+
+  # 6. download cutblocks
 
   get_harvest <- function(in_aoi, out_path) {
 
@@ -230,7 +279,7 @@ get_basedata <- function(in_aoi, out_path, overwrite = FALSE){
     return(TRUE)
     }
 
-  # download DEM via CDED package
+  # 7. download DEM via CDED package
 
     get_dem <- function(in_aoi, out_path){
 
@@ -265,6 +314,7 @@ get_basedata <- function(in_aoi, out_path, overwrite = FALSE){
     get_harvest(in_aoi, out_path)
     get_streams(in_aoi, out_path)
     get_fires(in_aoi, out_path)
+    get_fire_intensity(in_aoi, out_path)
     get_dem(in_aoi, out_path)
 
     message("\rBasedata downloaded")
