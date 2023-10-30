@@ -36,7 +36,7 @@ You can install the development version of skmoose from [GitHub](https://github.
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("gcperk/skmoose")
+devtools::install_github("ninoxconsulting/skmoose")
 ```
 
 ## Overview
@@ -51,11 +51,22 @@ The following criteria are used to estimate area of moose habitat. Once compiled
 
 - Deciduous tree species within the VRI (vegetation resource inventory). The default species include AC (Poplar), AT (Trembling Aspen), EP (Paper Birch), SB (Black Spruce), ie (**c("AT", "AC","EP","SB")**). 
 
-- Early seral/shrub dynamic habitats. This includes: 1) fires and 2) cutblocks with a minimum time of **5 yrs** since disturbance and maximum time of **40 yrs** since disturbance. These ages can be adjusted seperately for each disturbance type. 
+- Early seral/shrub dynamic habitats - Harvest disturbance. This includes blocks between **5 yrs** to **25 yrs** since disturbance. See Demars and Serrouya, 2018. 
+
+- Early seral/shrub dynamic habitats - Fire disturbance. This includes all fires between **10 yrs** to **25 yrs** since disturbance. 
+
+
+Fire  - STILL TO ADD DETAILS 
+
+
+
+These ages can be adjusted separately for each disturbance type. 
 
 - Proximity to streams, streams with orders of **3 to 8** are buffered by **150m**, and streams with order of **9** are buffered to **500m**.
 
 - Small lakes and wetlands which are less than 1 km2. 
+
+- Elevation under 1300m. Note while there are some collared moose using 1500m elevations in the winter, the majority of moose are using elevations <1300 meters in the winter months. 
 
 
 
@@ -134,6 +145,19 @@ The following datasets are used to estimate habitat and inhabitable areas. These
 - [stream network](https://catalogue.data.gov.bc.ca/dataset/92344413-8035-4c08-b996-65a9b3f62fca) is used to determine and buffer based on stream order. 
 
 - [fires historic](https://catalogue.data.gov.bc.ca/dataset/22c7cb44-1463-48f7-8e47-88857f207702) and [fires current](https://catalogue.data.gov.bc.ca/dataset/cdfc2d7b-c046-4bf0-90ac-4897232619e1) are used to estimate fires. Time since burn is used to filter the miniumum and maximum range to include for moose habitat. 
+
+- [fire severity](https://catalogue.data.gov.bc.ca/dataset/fire-burn-severity-same-year) used to estimate the intensity of most recent fires. 
+
+
+STILL TO ADD DETAILS
+
+
+
+
+
+https://catalogue.data.gov.bc.ca/dataset/c58a54e5-76b7-4921-94a7-b5998484e697
+
+
 
 - [cutblocks](https://catalogue.data.gov.bc.ca/dataset/b1b647a6-f271-42e0-9cd0-89ec24bce9f7) are filterd usein minimum and maximum time since harvest.
 
