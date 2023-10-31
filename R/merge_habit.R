@@ -51,6 +51,7 @@ merge_habit <- function(tmp_aoi, temp_out_dir) {
     # check fires
     if(file.exists(file.path(temp_out_dir,"fires_filtered.gpkg"))){
       fires <- sf::st_read(file.path(temp_out_dir,"fires_filtered.gpkg"),quiet = TRUE)
+
       if(length(st_geometry(hab)) == 0){
         hab <- rbind(fires, hab)
       } else {
