@@ -14,9 +14,10 @@
 calculate_areas <- function(blockno, aoi, out_dir){
 
 
-  area_tab <- foreach::foreach(x = blockno, .combine=rbind) %dopar% {
+  area_tab <- foreach::foreach(x = blockno[1:3], .combine=rbind) %dopar% {
 
-        #x = blockno[1]
+        x = blockno[42]
+
         tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
         temp_out_dir <- file.path(out_dir, x)
 
@@ -52,14 +53,29 @@ calculate_areas <- function(blockno, aoi, out_dir){
 
       }
 
-      tline <- c(x, block_area, uninh_area, hab_area)
+      if(file.exists(file.path(temp_out_dir,"non_wet_fire.gpkg"))){
+
+        nwfire <- sf::st_read(file.path(temp_out_dir, "non_wet_fire.gpkg"),quiet = TRUE)
+
+        fire_int_area <- sf::st_area(nwfire)[1]
+        fire_int_area <- fire_int_area/1000000
+
+      } else {
+
+        fire_int_area <- 0
+
+      }
+
+
+
+      tline <- c(x, block_area, uninh_area, hab_area, fire_int_area)
       tline
 
 
     }
 
 area_tab <- as.data.frame(area_tab, row.names = FALSE)
-names(area_tab) <- c("bkname", "block_area_km2", "uninhab_area_km2", "habitat_area_km2")
+names(area_tab) <- c("bkname", "block_area_km2", "uninhab_area_km2", "habitat_area_km2","fire_int_area_km2")
 
 # calculations
 
@@ -68,11 +84,12 @@ area_final <- area_tab %>%
   mutate(prop_uninhab_block = uninhab_area_km2/block_area_km2) %>%
   mutate(net_habitat_area_km2 = block_area_km2 - uninhab_area_km2)%>%
   mutate(prop_habit_block_km2 = habitat_area_km2/block_area_km2) %>%
-  mutate(prop_habit_net_habit_km2 = habitat_area_km2/net_habitat_area_km2 )
+  mutate(prop_habit_net_habit_km2 = habitat_area_km2/net_habitat_area_km2 ) %>%
+  mutate(prop_fireint_block_km2 = fire_int_area_km2/block_area_km2)
 
 area_final  <- area_final%>%
   dplyr::select(bkname, "block_area_km2" , "uninhab_area_km2", "prop_uninhab_block", "net_habitat_area_km2",
-                "habitat_area_km2", "prop_habit_block_km2", "prop_habit_net_habit_km2") %>%
+                "habitat_area_km2", "prop_habit_block_km2", "prop_habit_net_habit_km2","fire_int_area_km2", "prop_fireint_block_km2") %>%
   mutate_if(is.numeric, round, 2)
 
 

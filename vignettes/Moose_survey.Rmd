@@ -97,10 +97,10 @@ registerDoSEQ()
 
 # up to 269
 
-basedata <- foreach(x = blockno[241:269]) %dopar% {
+basedata <- foreach(x = blockno[1:5]) %dopar% {
   
   # test line - if you want to run a single block 
-  x = blockno[26]
+  x = blockno[42] #42, #50
   print(x)
   
   tmp_aoi <- aoi %>% dplyr::filter(bkname == x) 
@@ -128,7 +128,7 @@ This includes :
 
 - Rock and Ice 
 - Waterbodies >1 km2
-- Elevations >1500 m 
+- Elevations >1300 m 
 - Slopes >55 degrees
 
 If there are sections within the study area that meet these criteria they will be saved as a new .gpkg within the folder of the particular block. If no additional files are written out, then the criteria are not met. 
@@ -136,13 +136,13 @@ If there are sections within the study area that meet these criteria they will b
 ```{r}
 # set thresholds
 
-eval_threshold = 1500
+eval_threshold = 1300
 slope_threshold = 55
 
 
-uninhab <- foreach(x = blockno) %dopar% {
+uninhab <- foreach(x = blockno[42]) %dopar% {
   
-  x = blockno[26]
+  #x = blockno[26]
   
   tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
   temp_out_dir <- file.path(out_dir, x)
@@ -196,7 +196,7 @@ For each block we then combine the uninhabitable area into a single polygon and 
 ```{r}
 # merge uninhabitable area 
 
-uninhab <- foreach(x = blockno) %dopar% {
+uninhab <- foreach(x = blockno[42]) %dopar% {
   
  # x = blockno[1]
   print(x)
@@ -206,7 +206,7 @@ uninhab <- foreach(x = blockno) %dopar% {
   
   merge_nonhabit(tmp_aoi, temp_out_dir)
     
-     }
+  }
    
 ```
 
@@ -230,13 +230,13 @@ o	Skeena Wildlife Ecological Resource Model- Winter forage output
 
 # set thresholds
 cutblock_min_yr = 5
-cutblock_max_yr = 40
-fire_min_yr = 5
-fire_max_yr = 40
+cutblock_max_yr = 25
+fire_min_yr = 10
+fire_max_yr = 25
 
-habitable <- foreach(x = blockno) %dopar% {
+habitable <- foreach(x = blockno[42]) %dopar% {
   
-   #x = blockno[1]
+   #x = blockno[42]
     print(x)
   
     tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
@@ -252,14 +252,13 @@ habitable <- foreach(x = blockno) %dopar% {
     st_write(decid , file.path(temp_out_dir, "vri_decid.gpkg") , append = FALSE,quiet = TRUE)
     }
     
-  
    # get recent harvest 
     if("cutblocks.gpkg"  %in% list.files(temp_out_dir)){
   
       cutblocks <- st_read(file.path(temp_out_dir, "cutblocks.gpkg"),quiet = TRUE)
       cutblocks_yrs <- cutblocks_recent(cutblocks, cutblock_min_yr, cutblock_max_yr)
       
-    if(length(st_is_empty(decid)) > 0 ){
+    if(length(st_is_empty(cutblocks_yrs)) > 0 ){
        print("contains cutblocks")
     st_write(cutblocks_yrs, file.path(temp_out_dir, "cutblocks_filtered.gpkg"), quiet = TRUE, append = FALSE)
     }
@@ -271,11 +270,11 @@ habitable <- foreach(x = blockno) %dopar% {
   fires <- st_read(file.path(temp_out_dir, "fire.gpkg"),quiet = TRUE)
   fires_filtered <- fires_recent(fires, fire_min_yr, fire_max_yr)
   
-   if(length(st_is_empty(fires)) > 0 ){
+   if(length(st_is_empty(fires_filtered)) > 0 ){
      
       print("contains fire")
      
-  st_write(fires, file.path(temp_out_dir, "fires_filtered.gpkg"), append = FALSE,quiet = TRUE)
+  st_write( fires_filtered, file.path(temp_out_dir, "fires_filtered.gpkg"), append = FALSE,quiet = TRUE)
       }
    }
     
@@ -330,9 +329,9 @@ For each block we then combine all the outputs into a single moose habitat layer
 ```{r}
 # merge uninhabitable area 
 
-habitable <- foreach(x = blockno) %dopar% {
+habitable <- foreach(x = blockno[42]) %dopar% {
  
-  # x = blockno[1]
+  # x = blockno[42]
   
   tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
   temp_out_dir <- file.path(out_dir, x)
@@ -355,6 +354,57 @@ habitable <- foreach(x = blockno) %dopar% {
   }
    
 ```
+
+
+# Check for Burn Severity extents 
+
+Calculate the burn severity for each of the plots and out put a gpkg called 
+
+```{r}
+
+burn_strat <- foreach(x = blockno[1:5]) %dopar% {
+ 
+   x = blockno[50]
+  
+  tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
+  temp_out_dir <- file.path(out_dir, x)
+  
+  # merge_habit(tmp_aoi, temp_out_dir)
+  # remove an uninhabitable areas from within habitable 
+  
+  if(file.exists(file.path(temp_out_dir,"fire_int.gpkg"))){
+ 
+     fire_int <- st_read(file.path(temp_out_dir, "fire_int.gpkg"),quiet = TRUE)%>%
+       st_union()
+     
+     if(file.exists(file.path(temp_out_dir,"streams3_8.gpkg"))){
+     
+      stream <- st_read(file.path(temp_out_dir, "streams3_8.gpkg"),quiet = TRUE)
+      
+      non_wet_fire<- rmapshaper::ms_erase(fire_int, stream)
+     
+      } else {
+       
+       non_wet_fire <- fire_int
+       
+     }
+    
+    #final_hab <- st_difference(hab, uninh)
+    st_write(non_wet_fire, file.path(temp_out_dir, "non_wet_fire.gpkg"), quiet = TRUE, append = FALSE)
+   
+    }
+  
+  }
+
+
+
+```
+
+
+
+
+
+
 
 
 ## Calculate areas for habitat and non-habitable
