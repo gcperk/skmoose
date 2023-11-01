@@ -5,7 +5,14 @@
 \title{Assign Moose Stratification categories
 Assign each block a high, medium or low category based on assigned values or quartile.}
 \usage{
-assign_categories(out_table, quartile = FALSE, low = 0.4, med = 0.7, high = 1)
+assign_categories(
+  out_table,
+  quartile = FALSE,
+  low = 0.4,
+  med = 0.7,
+  high = 1,
+  burn_strat = 0.5
+)
 }
 \arguments{
 \item{out_table}{data frame of moose stratification values}
@@ -17,6 +24,8 @@ assign_categories(out_table, quartile = FALSE, low = 0.4, med = 0.7, high = 1)
 \item{med}{numeric value to assign the highest value of the medium category, default is 0.7}
 
 \item{high}{numeric value to assign the highest value of the high category, default is 1}
+
+\item{burn_strat}{numeric value threshold above which block will be classes as "burn_strat", default is 0.5}
 }
 \value{
 data table
