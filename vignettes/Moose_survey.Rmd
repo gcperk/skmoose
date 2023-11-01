@@ -396,7 +396,6 @@ burn_strat <- foreach(x = blockno[38:43]) %dopar% {
   }
 
 
-
 ```
 
 
