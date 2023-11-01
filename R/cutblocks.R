@@ -18,7 +18,7 @@ cutblocks_recent <- function(cutblocks, cutblock_min_yr = 5, cutblock_max_yr = 2
     st_cast("MULTIPOLYGON")
 
   cutblocks_yrs <- cutblocks_yrs %>%
-   filter(yrs_since_burn >=  cutblock_min_yr | yrs_since_burn <= cutblock_max_yr)
+   dplyr::filter(yrs_since_burn >=  cutblock_min_yr & yrs_since_burn <= cutblock_max_yr)
 
 return(cutblocks_yrs)
 
