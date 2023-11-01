@@ -6,6 +6,7 @@
 #' @param low numeric value to assign the highest value of the low category, default is 0.4
 #' @param med numeric value to assign the highest value of the medium category, default is 0.7
 #' @param high numeric value to assign the highest value of the high category, default is 1
+#' @param burn_strat numeric value threshold above which block will be classes as "burn_strat", default is 0.5
 #'
 #' @return data table
 #' @export
@@ -14,7 +15,7 @@
 #' assign_categories(out_table, quartile = FALSE, low = 40, med = 70, high = 100)
 #' }
 
-assign_categories <- function(out_table, quartile = FALSE, low = 0.4, med = 0.7, high = 1) {
+assign_categories <- function(out_table, quartile = FALSE, low = 0.4, med = 0.7, high = 1, burn_strat = 0.5) {
 
     if (quartile) {
       print("assigning catergories based on quartiles")
@@ -49,6 +50,17 @@ assign_categories <- function(out_table, quartile = FALSE, low = 0.4, med = 0.7,
         )
       )
     }
+
+  if(burn_strat)(
+
+    out <-  out %>%
+      mutate(
+        class = case_when(
+          prop_fireint_block_km2  > burn_strat ~ "burn_strat")
+        # might need a default value also
+      )
+
+    )
 
     return(out)
   }
