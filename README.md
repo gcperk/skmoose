@@ -9,10 +9,13 @@
 <!-- badges: end -->
 
 [SKmoose](https://gcperk.github.io/skmoose/index.html) is used to assess
-moose habitat quality within given survey blocks under aseries of
+moose habitat quality within given survey blocks under a series of
 criteria. This package provides a number of functions to extract data,
-estimate habitat and inhabitable areas within each block and report the
-values in a table.
+estimate habitat and inhabitable areas within each block. The output
+will include 1) a table (.csv) with several habitat metrics per block,
+including a habitat classification of low, medium, high or burnt. 2)
+spatial files (.shp or .gpkg) of habitat and non_habitat areas for each
+block, along with spatial files used in the calculations.
 
 Where possible, data used in the process is extracted directly from the
 BC data catalogue, using [bcdata](https://github.com/bcgov/bcdata) and
@@ -26,9 +29,9 @@ Optional additional data can be extracted including confidential survey
 telemetry data, however this is dependent on outside sources.
 
 A vignette is provided as a guide for users. These include a detailed
-step by step of all function in the package resulting in a csv table
-with compiled results. A test dataset is provided within the package to
-assist with understanding the process.
+step by step instruction of all functions in the package resulting in a
+csv table with compiled results. A test dataset is provided within the
+package to assist with understanding the process.
 
 ## Installation
 
@@ -37,51 +40,70 @@ You can install the development version of skmoose from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("gcperk/skmoose")
+devtools::install_github("ninoxconsulting/skmoose")
 ```
 
 ## Overview
 
-Potential Moose habitat is estimated for each survey block based on a
-series of criteria with spatial data extracted from the bcdata
-catalogue. Uninhabitable areas are also estimated using a set of
-criteria. All spatial data is extracted on a per block area rather than
-an entire study area to improve efficiency of processing. Appendix A
-provides a full list of references and spatial queries. Once potential
-habitat and inhabitable areas are compiled, total area of each are
-calculated to provide a means of stratifying moose survey blocks into
-categories of Low, Medium and High. A table of all calculations is
-output for the user to review.
+Potential Moose habitat is estimated for each survey block of a given
+area of interest, based on a series of criteria with spatial data
+extracted from the bcdata catalogue. Uninhabitable areas are also
+estimated using a set of criteria. All spatial data is extracted on a
+per block area rather than an entire study area to improve efficiency of
+processing. Appendix A provides a full list of data references and
+spatial queries.
+
+Once potential habitat and inhabitable areas are compiled, total areas
+(km2) of each are calculated to provide a means of stratifying moose
+survey blocks into categories of Low, Medium and High. A table of all
+calculations is output for the user to review. A separate category
+(Burn) is assigned to blocks which have more than 50% by block area
+which is classed as high or medium intensity fires (excluding wet areas,
+i.e and area that overlaps with a buffered stream flow). This
+classification is based on fires which occured within the last 10 years
+and for which burn severity mapping is available (2015 - 2022). As of
+November 1st 2023, the 2023 fire severity mapping is not yet available
+and has not been included in the assessment. Note burn classification is
+applied based on this criteria and does not take into account any
+habitat or uninhabitable calculations.
 
 ## Criteria for potential Moose habiat
 
 The following criteria are used to estimate area of moose habitat. Once
 compiled these areas are dissolved into a single polygon. Uninhabitable
-areas, as calculated below are then removed before final area
-calculations are completed. Values shown below in **bold** are the
-default values, which can be adjusted using parameters within the
-functions.
+areas, as calculated below hey intersect with the habitat area are then
+removed before final area calculations are completed. Values shown below
+in **bold** are the default values, which can be adjusted using
+parameters within each function.
 
 - Deciduous tree species within the VRI (vegetation resource inventory).
   The default species include AC (Poplar), AT (Trembling Aspen), EP
   (Paper Birch), SB (Black Spruce), ie (**c(“AT”, “AC”,“EP”,“SB”)**).
 
-- Early seral/shrub dynamic habitats. This includes: 1) fires and 2)
-  cutblocks with a minimum time of **5 yrs** since disturbance and
-  maximum time of **40 yrs** since disturbance. These ages can be
-  adjusted seperately for each disturbance type.
+- Early seral/shrub dynamic habitats - Harvest disturbance. This
+  includes blocks between **5 yrs** to **25 yrs** since disturbance. See
+  [Demars and Serrouya,
+  2018](https://cdnsciencepub.com/doi/abs/10.1139/cjz-2018-0319).
+
+- Early seral/shrub dynamic habitats - Fire disturbance. This includes
+  all fires between **10 yrs** to **25 yrs** since disturbance.
 
 - Proximity to streams, streams with orders of **3 to 8** are buffered
   by **150m**, and streams with order of **9** are buffered to **500m**.
 
 - Small lakes and wetlands which are less than 1 km2.
 
+- Elevation under 1300m. Note while there are some collared moose using
+  1500m elevations in the winter, the majority of moose are using
+  elevations \<1300 meters in the winter months.
+
 ## Criteria for uninhabitable areas
 
 Uninhabitable areas within the landscape are defined under the following
 criteria
 
-- Rock and Ice
+- Rock and Ice, Locations within the vri that are designated as alpine (
+  BCLCS_LEVEL_3 == “A”)
 
 - Large waterbodies greater than 1km2
 
@@ -108,16 +130,23 @@ The table contains the following fields:
 - prop_uninh_block = proportion of uninhabitable area of each block
   (0-1). (uninh_area_km2/block_area_km2)
 
-- net_habitat_area_km2 = Net area of habitat available within each block
+- net_habitat_area_km2 = net area of habitat available within each block
   (km2) (block_area_km2 - uninh_area_km2)
 
 - hab_area_km2 = total habitable area within each block (km2)
 
-- prop_habit_block_km2 = Proportion of habitat within the total area of
+- prop_habit_block_km2 = proportion of habitat within the total area of
   the block (km2) (hab_area_km2/block_area_km2)
 
 - prop_habit_net_habit_km2 = proportion of habitat within the net area
   of the block (hab_area_km2/net_habitat_area_km2)
+
+- fire_int_area_km2 = total area (km2) which contains high and medium
+  fires severity over the last 10 years (where data is available; ie
+  2015 - 2022 (as of November 1st 2023))
+
+- prop_fireint_block_km2 = Proportion of high/medium fire intensity
+  within the total area of the block (km2)
 
 ## OPTIONAL: Moose Habitat Strata Classification
 
@@ -126,10 +155,19 @@ Low/Medium/High categories based on the proportion of Moose
 Habitat/Block Area (prop_habit_block_km2).
 
 Values can be based on specific numeric thresholds, with default values
-of low (0 - 0.4), medium (0.41 - 0.7) and high (\>0.71). Alternatively
-the values can be calculated based on quartiles of the distribution, in
-which cutoff values are selected based on the distribution of all values
-in the blocks.
+of low (0 - 0.4), medium (0.41 - 0.7) and high (\>0.71).
+
+Alternatively the values can be calculated based on quartiles of the
+distribution, in which cutoff values are selected based on the
+distribution of all values in the blocks.
+
+## Calculate Blocks with high burn severity.
+
+For blocks with greater than 0.5 proportion of block area burnt
+(prop_fireint_block_km2), a classifcation of “Burnt” is assigned to
+these block. This is irrespective of any area of habitat or or
+inhabitable within the block. The threshold if set at **0.5 ** however
+this can be adjusted as a parameter within the function.
 
 These steps also produce a table, and an optional spatial file for
 review and adjustment.
@@ -168,6 +206,15 @@ areas. These include:
   current](https://catalogue.data.gov.bc.ca/dataset/cdfc2d7b-c046-4bf0-90ac-4897232619e1)
   are used to estimate fires. Time since burn is used to filter the
   miniumum and maximum range to include for moose habitat.
+
+- [fire severity - same
+  year](https://catalogue.data.gov.bc.ca/dataset/fire-burn-severity-same-year)
+  used to estimate the intensity of most recent fires.
+
+- [fire severity -
+  historic](https://catalogue.data.gov.bc.ca/dataset/fire-burn-severity-historical)
+  used to estimate the intensity of historic firest, starting in 2015
+  onwards.
 
 - [cutblocks](https://catalogue.data.gov.bc.ca/dataset/b1b647a6-f271-42e0-9cd0-89ec24bce9f7)
   are filterd usein minimum and maximum time since harvest.
