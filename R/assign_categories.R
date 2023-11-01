@@ -20,7 +20,7 @@ assign_categories <- function(out_table, quartile = FALSE, low = 0.4, med = 0.7,
     if (quartile) {
       print("assigning catergories based on quartiles")
 
-      qts <- quantile(out_table$prop_habit_block_km2)
+      qts <- stats::quantile(out_table$prop_habit_block_km2)
 
       low <- qts[[2]]
       med <- qts[[3]]
