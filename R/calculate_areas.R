@@ -16,7 +16,7 @@ calculate_areas <- function(blockno, aoi, out_dir){
 
   area_tab <- foreach::foreach(x = blockno[1:3], .combine=rbind) %dopar% {
 
-        x = blockno[42]
+       # x = blockno[42]
 
         tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
         temp_out_dir <- file.path(out_dir, x)
