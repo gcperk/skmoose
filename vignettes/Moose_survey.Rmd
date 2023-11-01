@@ -374,7 +374,7 @@ burn_strat <- foreach(x = blockno[38:43]) %dopar% {
   if(file.exists(file.path(temp_out_dir,"fire_int.gpkg"))){
  
      fire_int <- st_read(file.path(temp_out_dir, "fire_int.gpkg"),quiet = TRUE)%>%
-       st_union()
+       sf::st_union()
      
      if(file.exists(file.path(temp_out_dir,"streams3_8.gpkg"))){
      
