@@ -22,6 +22,7 @@ Imports:
     foreach,
     fs,
     magrittr,
+    rmapshaper,
     sf,
     stats,
     terra
