@@ -61,7 +61,14 @@ Assign each block a high, medium or low category based on assigned values or qua
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">assign_categories</span><span class="op">(</span><span class="va">out_table</span>, quartile <span class="op">=</span> <span class="cn">FALSE</span>, low <span class="op">=</span> <span class="fl">0.4</span>, med <span class="op">=</span> <span class="fl">0.7</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">assign_categories</span><span class="op">(</span></span>
+<span>  <span class="va">out_table</span>,</span>
+<span>  quartile <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  low <span class="op">=</span> <span class="fl">0.4</span>,</span>
+<span>  med <span class="op">=</span> <span class="fl">0.7</span>,</span>
+<span>  high <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  burn_strat <span class="op">=</span> <span class="fl">0.5</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -84,6 +91,10 @@ Assign each block a high, medium or low category based on assigned values or qua
 
 <dt>high</dt>
 <dd><p>numeric value to assign the highest value of the high category, default is 1</p></dd>
+
+
+<dt>burn_strat</dt>
+<dd><p>numeric value threshold above which block will be classes as "burn_strat", default is 0.5</p></dd>
 
 </dl></div>
     <div class="section level2">

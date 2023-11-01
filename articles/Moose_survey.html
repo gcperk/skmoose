@@ -156,12 +156,11 @@ to run overnight.</p>
 <span><span class="co"># loop through each block and extract the spatial basedata. These will be filtered based on criteria provided </span></span>
 <span><span class="co"># and a copy saved under the respective file folder. </span></span>
 <span></span>
-<span><span class="co"># up to 269</span></span>
 <span></span>
-<span><span class="va">basedata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">blockno</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">%dopar%</a></span> <span class="op">{</span></span>
+<span><span class="va">basedata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">blockno</span><span class="op">[</span><span class="fl">38</span><span class="op">:</span><span class="fl">43</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">%dopar%</a></span> <span class="op">{</span></span>
 <span>  </span>
 <span>  <span class="co"># test line - if you want to run a single block </span></span>
-<span>  <span class="va">x</span> <span class="op">=</span> <span class="va">blockno</span><span class="op">[</span><span class="fl">42</span><span class="op">]</span> <span class="co">#42, #50</span></span>
+<span>  <span class="co">#x = blockno[42] #42, #50, #38</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span>  </span>
 <span>  <span class="va">tmp_aoi</span> <span class="op">&lt;-</span> <span class="va">aoi</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">bkname</span> <span class="op">==</span> <span class="va">x</span><span class="op">)</span> </span>
@@ -202,7 +201,7 @@ met.</p>
 <span><span class="va">slope_threshold</span> <span class="op">=</span> <span class="fl">55</span></span>
 <span></span>
 <span></span>
-<span><span class="va">uninhab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">blockno</span><span class="op">[</span><span class="fl">42</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">%dopar%</a></span> <span class="op">{</span></span>
+<span><span class="va">uninhab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">blockno</span><span class="op">[</span><span class="fl">38</span><span class="op">:</span><span class="fl">43</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">%dopar%</a></span> <span class="op">{</span></span>
 <span>  </span>
 <span>  <span class="co">#x = blockno[26]</span></span>
 <span>  </span>
@@ -257,7 +256,7 @@ polygon and clip to the block boundary. The output file will be called
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># merge uninhabitable area </span></span>
 <span></span>
-<span><span class="va">uninhab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">blockno</span><span class="op">[</span><span class="fl">42</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">%dopar%</a></span> <span class="op">{</span></span>
+<span><span class="va">uninhab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">blockno</span><span class="op">[</span><span class="fl">38</span><span class="op">:</span><span class="fl">43</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">%dopar%</a></span> <span class="op">{</span></span>
 <span>  </span>
 <span> <span class="co"># x = blockno[1]</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
@@ -298,7 +297,7 @@ output</p></li>
 <span><span class="va">fire_min_yr</span> <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="va">fire_max_yr</span> <span class="op">=</span> <span class="fl">25</span></span>
 <span></span>
-<span><span class="va">habitable</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">blockno</span><span class="op">[</span><span class="fl">42</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">%dopar%</a></span> <span class="op">{</span></span>
+<span><span class="va">habitable</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">blockno</span><span class="op">[</span><span class="fl">38</span><span class="op">:</span><span class="fl">43</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">%dopar%</a></span> <span class="op">{</span></span>
 <span>  </span>
 <span>   <span class="co">#x = blockno[42]</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
@@ -391,9 +390,9 @@ habitat layer called “habitat.gpkg”.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># merge uninhabitable area </span></span>
 <span></span>
-<span><span class="va">habitable</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">blockno</span><span class="op">[</span><span class="fl">42</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">%dopar%</a></span> <span class="op">{</span></span>
+<span><span class="va">habitable</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">blockno</span><span class="op">[</span><span class="fl">38</span><span class="op">:</span><span class="fl">43</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">%dopar%</a></span> <span class="op">{</span></span>
 <span> </span>
-<span>  <span class="co"># x = blockno[42]</span></span>
+<span>   <span class="co">#x = blockno[42]</span></span>
 <span>  </span>
 <span>  <span class="va">tmp_aoi</span> <span class="op">&lt;-</span> <span class="va">aoi</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">bkname</span> <span class="op">==</span> <span class="va">x</span><span class="op">)</span></span>
 <span>  <span class="va">temp_out_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">out_dir</span>, <span class="va">x</span><span class="op">)</span></span>
@@ -424,9 +423,9 @@ habitat layer called “habitat.gpkg”.</p>
 called</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">burn_strat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">blockno</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">%dopar%</a></span> <span class="op">{</span></span>
+<span><span class="va">burn_strat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">blockno</span><span class="op">[</span><span class="fl">38</span><span class="op">:</span><span class="fl">43</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">%dopar%</a></span> <span class="op">{</span></span>
 <span> </span>
-<span>   <span class="va">x</span> <span class="op">=</span> <span class="va">blockno</span><span class="op">[</span><span class="fl">50</span><span class="op">]</span></span>
+<span>   <span class="co">#x = blockno[42]</span></span>
 <span>  </span>
 <span>  <span class="va">tmp_aoi</span> <span class="op">&lt;-</span> <span class="va">aoi</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">bkname</span> <span class="op">==</span> <span class="va">x</span><span class="op">)</span></span>
 <span>  <span class="va">temp_out_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">out_dir</span>, <span class="va">x</span><span class="op">)</span></span>
@@ -478,9 +477,9 @@ thresholds, i.e: 0-40% =L, #41-70%= Moderate, 71-100%, 71-100% = High 2)
 Assign values based on distribution of all block values.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Option 1: set thresholds based on the top value in each catergorty. </span></span>
-<span><span class="co"># Note you can adjust low, med and high values within the funtion</span></span>
+<span><span class="co"># Note you can adjust low, med and high values within the function</span></span>
 <span></span>
-<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/assign_categories.html">assign_categories</a></span><span class="op">(</span><span class="va">out_table</span>, low <span class="op">=</span> <span class="fl">0.4</span>, med <span class="op">=</span> <span class="fl">0.7</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/assign_categories.html">assign_categories</a></span><span class="op">(</span><span class="va">out_table</span>, low <span class="op">=</span> <span class="fl">0.4</span>, med <span class="op">=</span> <span class="fl">0.7</span>, high <span class="op">=</span> <span class="fl">1</span>, burn_strat <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="co"># OR</span></span>
