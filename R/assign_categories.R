@@ -17,6 +17,12 @@
 
 assign_categories <- function(out_table, quartile = FALSE, low = 0.4, med = 0.7, high = 1, burn_strat = 0.5) {
 
+ #  quartile = FALSE
+ # low = 0.4
+ # med = 0.7
+ # high = 1
+ # burn_strat = 0.5
+
     if (quartile) {
       print("assigning catergories based on quartiles")
 
@@ -46,7 +52,7 @@ assign_categories <- function(out_table, quartile = FALSE, low = 0.4, med = 0.7,
         class = case_when(
           prop_habit_block_km2 < low ~ "low",
           prop_habit_block_km2 > med ~ "high",
-          prop_habit_block_km2 > low & prop_habit_block_km2 <= med ~ "med"
+          prop_habit_block_km2 >= low & prop_habit_block_km2 <= med ~ "med"
         )
       )
     }
@@ -56,7 +62,8 @@ assign_categories <- function(out_table, quartile = FALSE, low = 0.4, med = 0.7,
     out <-  out %>%
       mutate(
         class = case_when(
-          prop_fireint_block_km2  > burn_strat ~ "burn_strat")
+          prop_fireint_block_km2  > burn_strat ~ "burnt",
+          .default = as.character(class))
         # might need a default value also
       )
 
