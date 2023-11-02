@@ -157,7 +157,7 @@ to run overnight.</p>
 <span><span class="co"># and a copy saved under the respective file folder. </span></span>
 <span></span>
 <span></span>
-<span><span class="va">basedata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">blockno</span><span class="op">[</span><span class="fl">38</span><span class="op">:</span><span class="fl">43</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">%dopar%</a></span> <span class="op">{</span></span>
+<span><span class="va">basedata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">blockno</span><span class="op">[</span><span class="fl">21</span><span class="op">:</span><span class="fl">40</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">%dopar%</a></span> <span class="op">{</span></span>
 <span>  </span>
 <span>  <span class="co"># test line - if you want to run a single block </span></span>
 <span>  <span class="co">#x = blockno[42] #42, #50, #38</span></span>
@@ -299,7 +299,7 @@ output</p></li>
 <span></span>
 <span><span class="va">habitable</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">blockno</span><span class="op">[</span><span class="fl">38</span><span class="op">:</span><span class="fl">43</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">%dopar%</a></span> <span class="op">{</span></span>
 <span>  </span>
-<span>   <span class="co">#x = blockno[42]</span></span>
+<span>    <span class="va">x</span> <span class="op">=</span> <span class="va">blockno</span><span class="op">[</span><span class="fl">20</span><span class="op">]</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span>  </span>
 <span>    <span class="va">tmp_aoi</span> <span class="op">&lt;-</span> <span class="va">aoi</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">bkname</span> <span class="op">==</span> <span class="va">x</span><span class="op">)</span></span>
