@@ -14,7 +14,7 @@
 calculate_areas <- function(blockno, aoi, out_dir){
 
 
-  area_tab <- foreach::foreach(x = blockno[1:3], .combine=rbind) %dopar% {
+  area_tab <- foreach::foreach(x = blockno, .combine=rbind) %dopar% {
 
        # x = blockno[42]
 
