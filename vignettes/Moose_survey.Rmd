@@ -96,7 +96,7 @@ registerDoSEQ()
 # and a copy saved under the respective file folder. 
 
 
-basedata <- foreach(x = blockno[38:43]) %dopar% {
+basedata <- foreach(x = blockno[21:40]) %dopar% {
   
   # test line - if you want to run a single block 
   #x = blockno[42] #42, #50, #38
@@ -235,7 +235,7 @@ fire_max_yr = 25
 
 habitable <- foreach(x = blockno[38:43]) %dopar% {
   
-   #x = blockno[42]
+    x = blockno[20]
     print(x)
   
     tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
