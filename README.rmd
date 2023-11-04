@@ -150,7 +150,6 @@ The following datasets are used to estimate habitat and inhabitable areas. These
 
 - [fire severity - historic ](https://catalogue.data.gov.bc.ca/dataset/fire-burn-severity-historical) used to estimate the intensity of historic firest, starting in 2015 onwards. 
 
-
 - [cutblocks](https://catalogue.data.gov.bc.ca/dataset/b1b647a6-f271-42e0-9cd0-89ec24bce9f7) are filterd usein minimum and maximum time since harvest.
 
 - [digital elevation model (dem)](https://rdrr.io/github/bcgov/bcmaps/man/cded.html) is used to estimate elevation and slope. This is extracted from the bcmaps packages and uses TRIM DEM. 
