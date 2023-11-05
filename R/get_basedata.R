@@ -291,8 +291,8 @@ get_basedata <- function(in_aoi, out_path, overwrite = FALSE){
 
       } else {
 
-      trim_raw <- bcmaps::cded_raster(in_aoi)
-      trim <- terra::rast(trim_raw)
+      trim <- bcmaps::cded_terra(in_aoi)
+      #trim <- terra::rast(trim_raw)
 
       #write out dem # in case
       terra::writeRaster(trim, file.path(out_path, "dem.tif"), overwrite = TRUE)
