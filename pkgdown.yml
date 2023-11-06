@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   Moose_survey: Moose_survey.html
   Moose_telemetry_results: Moose_telemetry_results.html
-last_built: 2023-11-02T23:34Z
+last_built: 2023-11-06T03:43Z
 urls:
   reference: https://gcperk.github.io/skmoose/reference
   article: https://gcperk.github.io/skmoose/articles
