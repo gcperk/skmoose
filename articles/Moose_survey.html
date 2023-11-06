@@ -42,7 +42,6 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/Moose_survey.html">Moose_survey</a>
-    <a class="dropdown-item" href="../articles/Moose_telemetry_results.html">Telemetry_data</a>
   </div>
 </li>
       </ul>
@@ -489,6 +488,7 @@ Assign values based on distribution of all block values.</p>
 <span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">out</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">out_dir</span>, <span class="st">"moose_stratification_outputs_classed.csv"</span><span class="op">)</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#out &lt;- read.csv(file.path(out_dir, "moose_stratification_outputs_classed.csv"))</span></span>
 <span></span>
 <span></span>
 <span><span class="co"># write out a spatial output with blocks and values; </span></span>
@@ -496,7 +496,7 @@ Assign values based on distribution of all block values.</p>
 <span><span class="va">sp_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">aoi</span>, <span class="va">out</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_write.html" class="external-link">st_write</a></span><span class="op">(</span><span class="va">sp_out</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">out_dir</span>, <span class="st">"moose_stratification_output.gpkg"</span><span class="op">)</span>,quiet <span class="op">=</span> <span class="cn">TRUE</span>,append <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#st_write(sp_out, file.path(out_dir, "moose_stratification_output.shp"),append = FALSE)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_write.html" class="external-link">st_write</a></span><span class="op">(</span><span class="va">sp_out</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">out_dir</span>, <span class="st">"moose_stratification_output.shp"</span><span class="op">)</span>,append <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 </div>
