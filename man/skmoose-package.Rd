@@ -13,6 +13,7 @@ Useful links:
 \itemize{
   \item \url{https://github.com/gcperk/skmoose}
   \item \url{https://gcperk.github.io/skmoose/}
+  \item \url{https://ninoxconsulting.github.io/skmoose/}
   \item Report bugs at \url{https://github.com/gcperk/skmoose/issues}
 }
 
