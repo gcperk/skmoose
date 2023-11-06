@@ -97,7 +97,7 @@ registerDoSEQ()
 
 # 247 error
 
-basedata <- foreach(x = blockno[252:259]) %dopar% {
+basedata <- foreach(x = blockno) %dopar% {
   
   # test line - if you want to run a single block 
   #x = blockno[249] #42, #50, #38
@@ -396,11 +396,6 @@ burn_strat <- foreach(x = blockno) %dopar% {
 
 
 ```
-
-
-
-
-
 
 
 
