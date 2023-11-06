@@ -85,7 +85,7 @@ sf::st_write(aoi, file.path(out_dir, "aoi.gpkg"), append = FALSE)
 
 We can now begin to extract the base data for each block. This uses the bcdata and bcmaps package to pull data directly from the bcdata catalogue. The process is set up to iterate over each block. While this is not very fast, it provides a more stable method to reduce the incidence of timing out during large data downloads, specifically with the VRI dataset. 
 
-**WARNING**: this is the most time consuming part of the process and will take some time to run if extracting many blocks. Best to run overnight. 
+**WARNING**: this is the most time consuming part of the process and will take some time to run if extracting many blocks. Best to run overnight. If there is a time out error or 
 
 
 ```{r}
@@ -95,11 +95,12 @@ registerDoSEQ()
 # loop through each block and extract the spatial basedata. These will be filtered based on criteria provided 
 # and a copy saved under the respective file folder. 
 
+# 247 error
 
-basedata <- foreach(x = blockno[21:40]) %dopar% {
+basedata <- foreach(x = blockno[252:259]) %dopar% {
   
   # test line - if you want to run a single block 
-  #x = blockno[42] #42, #50, #38
+  #x = blockno[249] #42, #50, #38
   print(x)
   
   tmp_aoi <- aoi %>% dplyr::filter(bkname == x) 
@@ -139,7 +140,7 @@ eval_threshold = 1300
 slope_threshold = 55
 
 
-uninhab <- foreach(x = blockno[38:43]) %dopar% {
+uninhab <- foreach(x = blockno) %dopar% {
   
   #x = blockno[26]
   
@@ -195,7 +196,7 @@ For each block we then combine the uninhabitable area into a single polygon and 
 ```{r}
 # merge uninhabitable area 
 
-uninhab <- foreach(x = blockno[38:43]) %dopar% {
+uninhab <- foreach(x = blockno) %dopar% {
   
  # x = blockno[1]
   print(x)
@@ -233,9 +234,9 @@ cutblock_max_yr = 25
 fire_min_yr = 10
 fire_max_yr = 25
 
-habitable <- foreach(x = blockno[38:43]) %dopar% {
+habitable <- foreach(x = blockno) %dopar% {
   
-    x = blockno[20]
+    #x = blockno[20]
     print(x)
   
     tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
@@ -313,7 +314,6 @@ habitable <- foreach(x = blockno[38:43]) %dopar% {
   st_write(smalllakes, file.path(temp_out_dir, "smalllakes.gpkg"), quiet = TRUE, append = FALSE)
       }
    }
-    
   
 }
   
@@ -328,9 +328,9 @@ For each block we then combine all the outputs into a single moose habitat layer
 ```{r}
 # merge uninhabitable area 
 
-habitable <- foreach(x = blockno[38:43]) %dopar% {
+habitable <- foreach(x = blockno) %dopar% {
  
-   #x = blockno[42]
+   #x = blockno[20]
   
   tmp_aoi <- aoi %>% dplyr::filter(bkname == x)
   temp_out_dir <- file.path(out_dir, x)
@@ -361,7 +361,7 @@ Calculate the burn severity for each of the plots and out put a gpkg called
 
 ```{r}
 
-burn_strat <- foreach(x = blockno[38:43]) %dopar% {
+burn_strat <- foreach(x = blockno) %dopar% {
  
    #x = blockno[42]
   
@@ -414,7 +414,7 @@ For each block we will read in the habitable and inhabitable areas and calculate
 
 out_table <- calculate_areas(blockno, aoi, out_dir)
 
-write.csv(out_table, file.path(out_dir, "moose_stratification_outputs_final.csv"), row.names = FALSE)
+write.csv(out_table, file.path(out_dir, "moose_stratification_outputs_raw.csv"), row.names = FALSE)
 
 ```
 
@@ -450,7 +450,7 @@ write.csv(out, file.path(out_dir, "moose_stratification_outputs_classed.csv"), r
 sp_out <- merge(aoi, out)
 
 st_write(sp_out, file.path(out_dir, "moose_stratification_output.gpkg"),quiet = TRUE,append = FALSE)
-st_write(sp_out, file.path(out_dir, "moose_stratification_output.shp"),append = FALSE)
+#st_write(sp_out, file.path(out_dir, "moose_stratification_output.shp"),append = FALSE)
 
 
 ```
