@@ -16,7 +16,12 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup, eval=FALSE}
+library(usethis)
+#install.packages("devtools")
+devtools::install_github("ninoxconsulting/skmoose")
+library(devtools)
 load_all()
+library(usethis)
 library(skmoose)
 library(sf)
 library(dplyr)
@@ -42,6 +47,7 @@ data_file <- skmoose::skmoose_example()
 bks_name <- file.path(data_location, data_file)
 
 # Alternatively you can read in an entire data set by pointing to the file location as shown below: 
+bks_name <- file.path("/home/user/Documents/r_repo/2023_moose_block_surveyR/02.Data/Tweedsmuir-SRBblocks.gpkg")
 
 bks_name <- file.path("C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_block_surveyR\\02.Data\\Tweedsmuir-SRBblocks.gpkg")
 
@@ -68,8 +74,8 @@ Create an output folder where you want the raw data geo spatial data to be saved
 ```{r}
 
 # create an output folder: 
-out_dir <- "C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_block_surveyR\\02.Data\\data"
-
+#out_dir <- "C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_block_surveyR\\02.Data\\data"
+out_dir <- "/home//user/Documents/r_repo/2023_moose_block_surveyR/02.Data/data"
 
 # check if the folder already exists and if it doesn't create a folder
 if (!dir.exists(out_dir )){
@@ -100,7 +106,7 @@ registerDoSEQ()
 basedata <- foreach(x = blockno) %dopar% {
   
   # test line - if you want to run a single block 
-  #x = blockno[249] #42, #50, #38
+  x = blockno[92] #42, #50, #38
   print(x)
   
   tmp_aoi <- aoi %>% dplyr::filter(bkname == x) 
