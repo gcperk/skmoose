@@ -3,7 +3,7 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   Moose_survey: Moose_survey.html
-last_built: 2023-11-06T18:23Z
+last_built: 2023-12-18T17:23Z
 urls:
   reference: https://ninoxconsulting.github.io/skmoose/reference
   article: https://ninoxconsulting.github.io/skmoose/articles
