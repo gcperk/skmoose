@@ -25,7 +25,6 @@ library(sf)
 library(dplyr)
 library(terra)
 library(foreach)
-load_all()
 
 ```
 
@@ -46,9 +45,9 @@ data_file <- skmoose::skmoose_example()
 bks_name <- file.path(data_location, data_file)
 
 # Alternatively you can read in an entire data set by pointing to the file location as shown below: 
-bks_name <- file.path("/home/user/Documents/r_repo/2023_moose_block_surveyR/02.Data/Tweedsmuir-SRBblocks.gpkg")
+#bks_name <- file.path("/home/user/Documents/r_repo/2023_moose_block_surveyR/02.Data/Tweedsmuir-SRBblocks.gpkg")
 
-#bks_name <- file.path("C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_block_surveyR\\02.Data\\Tweedsmuir-SRBblocks.gpkg")
+bks_name <- file.path("C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_block_surveyR\\02.Data\\Tweedsmuir-SRBblocks.gpkg")
 
 ```
 
@@ -73,8 +72,8 @@ Create an output folder where you want the raw data geo spatial data to be saved
 ```{r}
 # create an output folder: 
 
-#out_dir <- "C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_block_surveyR\\02.Data\\data"
-out_dir <- "/home//user/Documents/r_repo/2023_moose_block_surveyR/02.Data/data"
+out_dir <- "C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_block_surveyR\\02.Data\\data"
+#out_dir <- "/home//user/Documents/r_repo/2023_moose_block_surveyR/02.Data/data"
 
 # check if the folder already exists and if it doesn't create a folder
 if (!dir.exists(out_dir )){
@@ -129,7 +128,7 @@ basedata <- foreach(x = blockno) %dopar% {
 ## Extract uninhabitable area
 
 Once all the base data is extracted we can filter uninhabitable areas for moose. 
-This includes : 
+This includes: 
 
 - Rock and Ice 
 - Waterbodies >1 km2
@@ -413,7 +412,7 @@ out_table <- calculate_areas(blockno, aoi, out_dir)
 
 write.csv(out_table, file.path(out_dir, "moose_stratification_outputs_raw.csv"), row.names = FALSE)
 
-#out_table <- read.csv(file.path(out_dir, "moose_stratification_outputs_raw.csv"))
+out_table <- read.csv(file.path(out_dir, "moose_stratification_outputs_raw.csv"))
 
 ```
 
@@ -446,7 +445,7 @@ write.csv(out, file.path(out_dir, "moose_stratification_outputs_classed.csv"), r
 sp_out <- merge(aoi, out)
 
 st_write(sp_out, file.path(out_dir, "moose_stratification_output.gpkg"),quiet = TRUE,append = FALSE)
-#st_write(sp_out, file.path(out_dir, "moose_stratification_output.shp"),append = FALSE)
+st_write(sp_out, file.path(out_dir, "moose_stratification_output.shp"),append = FALSE)
 
 
 ```
