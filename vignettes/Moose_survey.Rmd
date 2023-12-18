@@ -433,7 +433,6 @@ Two proposed methods include
 
 out <- assign_categories(out_table, low = 0.4, med = 0.7, high = 1, burn_strat = 0.5)
 
-
 # OR
 # option 2:  estimate thresholds based on the quantiles ie: 
 outq <- assign_categories(out_table, quartile = TRUE)
