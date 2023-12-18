@@ -214,7 +214,8 @@ areas. These include:
 - [fire severity -
   historic](https://catalogue.data.gov.bc.ca/dataset/fire-burn-severity-historical)
   used to estimate the intensity of historic firest, starting in 2015
-  onwards.
+  onwards. Note 2014 fire intensity was obtained directly from Ministry
+  of Forests for this analysis (Decemeber 15th 2023).
 
 - [cutblocks](https://catalogue.data.gov.bc.ca/dataset/b1b647a6-f271-42e0-9cd0-89ec24bce9f7)
   are filterd usein minimum and maximum time since harvest.
