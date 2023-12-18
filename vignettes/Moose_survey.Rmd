@@ -16,17 +16,16 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup, eval=FALSE}
-library(usethis)
 #install.packages("devtools")
-devtools::install_github("ninoxconsulting/skmoose")
+#devtools::install_github("ninoxconsulting/skmoose")
 library(devtools)
-load_all()
 library(usethis)
 library(skmoose)
 library(sf)
 library(dplyr)
 library(terra)
 library(foreach)
+load_all()
 
 ```
 
@@ -49,7 +48,7 @@ bks_name <- file.path(data_location, data_file)
 # Alternatively you can read in an entire data set by pointing to the file location as shown below: 
 bks_name <- file.path("/home/user/Documents/r_repo/2023_moose_block_surveyR/02.Data/Tweedsmuir-SRBblocks.gpkg")
 
-bks_name <- file.path("C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_block_surveyR\\02.Data\\Tweedsmuir-SRBblocks.gpkg")
+#bks_name <- file.path("C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_block_surveyR\\02.Data\\Tweedsmuir-SRBblocks.gpkg")
 
 ```
 
@@ -72,8 +71,8 @@ blockno <- as.list(unique(aoi$bkname))
 Create an output folder where you want the raw data geo spatial data to be saved. Note a folder will be generated for each block number (labelled numerically). 
 
 ```{r}
-
 # create an output folder: 
+
 #out_dir <- "C:\\Users\\genev\\OneDrive\\Documents\\02.Contracts\\2023_oddjobs\\2023_moose_block_surveyR\\02.Data\\data"
 out_dir <- "/home//user/Documents/r_repo/2023_moose_block_surveyR/02.Data/data"
 
@@ -106,7 +105,7 @@ registerDoSEQ()
 basedata <- foreach(x = blockno) %dopar% {
   
   # test line - if you want to run a single block 
-  x = blockno[92] #42, #50, #38
+  #x = blockno[92] #42, #50, #38
   print(x)
   
   tmp_aoi <- aoi %>% dplyr::filter(bkname == x) 
@@ -223,17 +222,15 @@ We now compiled all the moose habitat areas. This involves reading in the base d
 
 - Deciduous tree species, queried in VRI: [SPECIES_CD LIKE 'A%' OR SPECIES_CD = 'EP' OR SPECIES_CD = 'SB' OR SPECIES__1 LIKE 'A%' OR SPECIES__1 = 'EP' OR SPECIES__1 = 'SB' OR SPECIES__3 LIKE 'A%' OR SPECIES__3 = 'EP' OR SPECIES__3 ='SB' OR SPECIES__5 LIKE 'A%' OR SPECIES__5 LIKE 'E%']
 
-- Early seral/shrub dynamic habitats: Fires that are >5 and <40 years old 
+- Early seral/shrub dynamic habitats: Fires that are >10 and <25 years old 
 - Cutblocks that are  >5 and < 40 years old 
 - Buffered 3-8 order streams from FWA stream dataset by 150m (dissolved) 
 - 9th order streams buffered by 500 meters. 
-o	Wetlands from FWA ≤ 1 km2
-o	Skeena Wildlife Ecological Resource Model- Winter forage output 
-
+- Wetlands from FWA ≤ 1 km2
+- Skeena Wildlife Ecological Resource Model- Winter forage output 
 
 
 ```{r}
-
 # set thresholds
 cutblock_min_yr = 5
 cutblock_max_yr = 25
@@ -362,7 +359,7 @@ habitable <- foreach(x = blockno) %dopar% {
 
 # Check for Burn Severity extents 
 
-Calculate the burn severity for each of the plots and out put a gpkg called 
+Calculate the burn severity for each of the plots and out put a gpkg called non_wet_fire.gpkg
 
 ```{r}
 
@@ -416,6 +413,8 @@ out_table <- calculate_areas(blockno, aoi, out_dir)
 
 write.csv(out_table, file.path(out_dir, "moose_stratification_outputs_raw.csv"), row.names = FALSE)
 
+#out_table <- read.csv(file.path(out_dir, "moose_stratification_outputs_raw.csv"))
+
 ```
 
 
@@ -437,21 +436,18 @@ out <- assign_categories(out_table, low = 0.4, med = 0.7, high = 1, burn_strat =
 
 # OR
 # option 2:  estimate thresholds based on the quantiles ie: 
-
-
 outq <- assign_categories(out_table, quartile = TRUE)
 
 
 write.csv(out, file.path(out_dir, "moose_stratification_outputs_classed.csv"), row.names = FALSE)
 #out <- read.csv(file.path(out_dir, "moose_stratification_outputs_classed.csv"))
 
-
 # write out a spatial output with blocks and values; 
 
 sp_out <- merge(aoi, out)
 
 st_write(sp_out, file.path(out_dir, "moose_stratification_output.gpkg"),quiet = TRUE,append = FALSE)
-st_write(sp_out, file.path(out_dir, "moose_stratification_output.shp"),append = FALSE)
+#st_write(sp_out, file.path(out_dir, "moose_stratification_output.shp"),append = FALSE)
 
 
 ```
